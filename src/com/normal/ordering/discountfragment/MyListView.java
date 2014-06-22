@@ -67,7 +67,7 @@ public class MyListView extends ListView implements OnScrollListener {
 
 	private ImageView arrowImageView;
 
-	 private ProgressBar progressBar;
+	private ProgressBar progressBar;
 
 	private RotateAnimation animation;
 
@@ -116,21 +116,21 @@ public class MyListView extends ListView implements OnScrollListener {
 	private void init(Context context)
 
 	{
-	
+
 		// setCacheColorHint(context.getResources().getColor(R.color.transparent));
 
 		inflater = LayoutInflater.from(context);
-		
+
 		headView = (LinearLayout) inflater.inflate(R.layout.head, null);
-		
+
 		arrowImageView = (ImageView) headView
 				.findViewById(R.id.head_arrowImageView);
 		arrowImageView.setMinimumWidth(70);
 
 		arrowImageView.setMinimumHeight(50);
 
-		 progressBar = (ProgressBar)
-		headView.findViewById(R.id.head_progressBar);
+		progressBar = (ProgressBar) headView
+				.findViewById(R.id.head_progressBar);
 
 		tipsTextview = (TextView) headView.findViewById(R.id.head_tipsTextView);
 
@@ -190,8 +190,7 @@ public class MyListView extends ListView implements OnScrollListener {
 		// Log.v(TAG, "firstItemIndex: "+firstItemIndex);
 	}
 
-	public void onScrollStateChanged(AbsListView arg0, int arg1)
-	{
+	public void onScrollStateChanged(AbsListView arg0, int arg1) {
 	}
 
 	public boolean onTouchEvent(MotionEvent event) {
@@ -463,7 +462,7 @@ public class MyListView extends ListView implements OnScrollListener {
 		case RELEASE_To_REFRESH:
 			arrowImageView.setVisibility(View.VISIBLE);
 
-			 progressBar.setVisibility(View.GONE);
+			progressBar.setVisibility(View.GONE);
 
 			tipsTextview.setVisibility(View.VISIBLE);
 
@@ -481,7 +480,7 @@ public class MyListView extends ListView implements OnScrollListener {
 
 		case PULL_To_REFRESH:
 
-			 progressBar.setVisibility(View.GONE);
+			progressBar.setVisibility(View.GONE);
 
 			tipsTextview.setVisibility(View.VISIBLE);
 
@@ -530,7 +529,7 @@ public class MyListView extends ListView implements OnScrollListener {
 
 			headView.setPadding(0, 0, 0, 0);
 
-			 progressBar.setVisibility(View.VISIBLE);
+			progressBar.setVisibility(View.VISIBLE);
 
 			arrowImageView.clearAnimation();
 			arrowImageView.setVisibility(View.GONE);
@@ -547,7 +546,7 @@ public class MyListView extends ListView implements OnScrollListener {
 
 			headView.setPadding(0, -1 * headContentHeight, 0, 0);
 
-			 progressBar.setVisibility(View.GONE);
+			progressBar.setVisibility(View.GONE);
 
 			arrowImageView.clearAnimation();
 
@@ -588,7 +587,7 @@ public class MyListView extends ListView implements OnScrollListener {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
 		String date = format.format(new Date());
 		lastUpdatedTextView.setText("最近更新:" + date);
-		
+
 	}
 
 	private void onRefresh() {
@@ -614,16 +613,14 @@ public class MyListView extends ListView implements OnScrollListener {
 		if (lpHeight > 0) {
 			childHeightSpec = MeasureSpec.makeMeasureSpec(lpHeight,
 					MeasureSpec.EXACTLY);
-		}
-		else
-		{
+		} else {
 			childHeightSpec = MeasureSpec.makeMeasureSpec(0,
 					MeasureSpec.UNSPECIFIED);
 		}
 		child.measure(childWidthSpec, childHeightSpec);
 	}
-	public void setAdapter(BaseAdapter adapter)
-	{
+
+	public void setAdapter(BaseAdapter adapter) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
 		String date = format.format(new Date());
 		lastUpdatedTextView.setText("最近更新:" + date);

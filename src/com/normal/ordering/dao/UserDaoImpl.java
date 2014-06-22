@@ -20,7 +20,6 @@ public class UserDaoImpl implements UserDao {
 
 	public User getUser() {
 		User user = new User();
-
 		return user;
 	}
 
