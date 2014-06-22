@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_tab"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_index_menu"
+    android:baselineAligned="false" >
+
+    <FrameLayout
+        android:id="@+id/bottom_tab_discount"
+        android:layout_width="0.0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/bottom_tab_discount_text_view"
+            style="@style/BottomTab"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawableTop="@drawable/ic_menu_deal_selector"
+            android:text="@string/tab_widget_discount_text" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/bottom_tab_order"
+        android:layout_width="0.0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/bottom_tab_order_text_view"
+            style="@style/BottomTab"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawableTop="@drawable/ic_tab_order"
+            android:text="@string/tab_widget_order_text" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/bottom_tab_user"
+        android:layout_width="0.0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/bottom_tab_user_text_view"
+            style="@style/BottomTab"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawableTop="@drawable/ic_tab_user"
+            android:duplicateParentState="true"
+            android:text="@string/tab_widget_user_text" />
+
+        <ImageView
+            android:id="@+id/bottom_tab_user_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right|center"
+            android:layout_marginRight="20.0dip"
+            android:layout_marginTop="4.0dip"
+            android:contentDescription="@string/bottom_tab_image_view_content_description"
+            android:src="@drawable/action_bar_bg" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/bottom_tab_more"
+        android:layout_width="0.0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <TextView
+            android:id="@+id/bottom_tab_more_text_view"
+            style="@style/BottomTab"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawableTop="@drawable/ic_tab_more"
+            android:duplicateParentState="true"
+            android:text="@string/tab_widget_more_text" />
+
+        <ImageView
+            android:id="@+id/bottom_tab_more_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right|center"
+            android:layout_marginRight="20.0dip"
+            android:layout_marginTop="4.0dip"
+            android:contentDescription="@string/bottom_tab_image_view_content_description"
+            android:src="@drawable/action_bar_bg" />
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,103 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20.0dip"
+            android:layout_marginRight="20.0dip"
+            android:layout_marginTop="20.0dip"
+            android:background="#ffffffff"
+            android:orientation="vertical"
+            android:padding="20.0dip" >
+
+            <EditText
+                android:id="@+id/mainactivity_edit_registeremail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_selector"
+                android:hint="@string/activity_register_edit_register_email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10.0dip"
+                android:scrollbars="none"
+                android:singleLine="true"
+                android:textColor="#ff000000"
+                android:textColorHint="@color/black3"
+                android:textSize="@dimen/text_size_h6" />
+
+            <EditText
+                android:id="@+id/mainactivity_edit_registerpassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20.0dip"
+                android:background="@drawable/bg_edit_selector"
+                android:digits="@string/activity_input_type"
+                android:hint="@string/activity_register_edit_register_password"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword"
+                android:paddingLeft="10.0dip"
+                android:singleLine="true"
+                android:textColor="#ff000000"
+                android:textColorHint="@color/black3"
+                android:textSize="@dimen/text_size_h6" />
+
+            <EditText
+                android:id="@+id/mainactivity_edit_registername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20.0dip"
+                android:background="@drawable/bg_edit_selector"
+                android:hint="@string/activity_register_edit_register_name"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:paddingLeft="10.0dip"
+                android:scrollbars="none"
+                android:singleLine="true"
+                android:textColor="#ff000000"
+                android:textColorHint="@color/black3"
+                android:textSize="@dimen/text_size_h6" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20.0dip"
+            android:layout_marginLeft="20.0dip"
+            android:layout_marginRight="20.0dip"
+            android:layout_marginTop="15.0dip"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/mainactivity_btn_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="45.0dip"
+                    android:background="@drawable/bg_cornered_green"
+                    android:gravity="center"
+                    android:text="@string/activity_register_btn_register"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_h3" />
+
+                <ProgressBar
+                    android:id="@+id/register_progress"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center"
+                    android:layout_marginRight="5.0dip"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

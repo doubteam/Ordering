@@ -1,0 +1,35 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="CustomTheme" parent="@android:style/Theme.DeviceDefault.Light">
+        <item name="android:actionOverflowButtonStyle">@style/CustomActionButtonOverflow</item>
+        <item name="android:actionBarStyle">@style/CustomActionBar</item>
+        <!--
+        <item name="android:windowNoTitle">true</item>  -->
+        
+    </style>
+
+    <style name="CustomActionButtonOverflow" parent="@android:style/Widget.DeviceDefault.Light.ActionButton.Overflow">
+        <item name="android:src">@android:drawable/ic_menu_info_details</item>
+    </style>
+
+    <style name="CustomActionBar" parent="@android:style/Widget.DeviceDefault.Light.ActionBar">
+
+        <!-- 顶栏背景颜色 -->
+        <item name="android:background">@drawable/label_bg</item>
+        <!-- SmartBar（Tab） 背景颜色 -->
+        <item name="android:backgroundSplit">@drawable/action_bar_bg</item>
+    </style>
+  <style name="BottomTab" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_h10</item>
+        <item name="android:textColor">@color/bottom_tab_text_color_selector</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_bottom_tab</item>
+        <item name="android:paddingTop">7.0dip</item>
+        <item name="android:paddingBottom">2.0dip</item>
+        <item name="android:drawablePadding">0.0dip</item>
+    </style>
+     <style name="progress_bar_style_small" parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">@drawable/progress_bar</item>
+    </style>
+       
+</resources>

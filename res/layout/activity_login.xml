@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20.0dip"
+            android:layout_marginRight="20.0dip"
+            android:layout_marginTop="20.0dip"
+            android:background="#ffffffff"
+            android:orientation="vertical"
+            android:padding="20.0dip" >
+
+            <EditText
+                android:id="@+id/loginActivity_edt_loginemail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_selector"
+                android:hint="@string/activity_login_edit_login_email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10.0dip"
+                android:scrollbars="none"
+                android:singleLine="true"
+                android:textColor="#ff000000"
+                android:textColorHint="@color/black3"
+                android:textSize="@dimen/text_size_h6" />
+
+            <EditText
+                android:id="@+id/loginActivity_edt_loginpassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20.0dip"
+                android:background="@drawable/bg_edit_selector"
+                android:hint="@string/activity_login_edit_login_password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:paddingLeft="10.0dip"
+                android:singleLine="true"
+                android:textColor="#ff000000"
+                android:textColorHint="@color/black3"
+                android:textSize="@dimen/text_size_h6" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20.0dip"
+            android:layout_marginLeft="20.0dip"
+            android:layout_marginRight="20.0dip"
+            android:layout_marginTop="15.0dip"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/loginActivity_btn_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="45.0dip"
+                    android:background="@drawable/bg_cornered_green"
+                    android:gravity="center"
+                    android:text="@string/activity_login_btn_login"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_h3" />
+
+                <ProgressBar
+                    android:id="@+id/login_progress"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center"
+                    android:layout_marginRight="5.0dip"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10.0dip"
+                android:gravity="center_vertical" >
+
+                <TextView
+                    android:id="@+id/loginActivity_text_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/list_row_selector"
+                    android:drawablePadding="5.0dip"
+                    android:text="@string/activity_login_text_register"
+                    android:textColor="@color/green"
+                    android:textSize="@dimen/text_size_h6" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>
