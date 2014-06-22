@@ -7,14 +7,15 @@
     <ImageView
         android:id="@+id/discountActivity_item_img"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:contentDescription="@string/fragment_discount_list_view_content_img_view_content_description" />
+        android:contentDescription="@string/fragment_discount_list_view_content_img_view_content_description"
+        android:scaleType="centerInside" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:orientation="vertical" >
 
         <TextView
