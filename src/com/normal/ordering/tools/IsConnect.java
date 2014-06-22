@@ -9,9 +9,9 @@ import android.widget.Toast;
 public class IsConnect {
 	/**
 	 * 获取网络是否连接
-	 * 
+	 * @author VBaboon
 	 * @param context
-	 * @return
+	 * @return boolean
 	 */
 	public static boolean isConnect(Context context) {
 		// 获取手机所有连接管理对象（包括对wi-fi,net等连接的管理）
