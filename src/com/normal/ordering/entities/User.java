@@ -3,11 +3,11 @@ package com.normal.ordering.entities;
 import java.io.Serializable;
 
 public class User implements Serializable {
-	private String userName;
-	private String userEmail;
-	private String userPassword;
-	private String vip;
-	private String integration;
+	private String userName;//用户昵称
+	private String userEmail;//登录名（邮箱）
+	private String userPassword;//密码
+	private String vip;//VIP等级
+	private String integration;//积分
 
 	public String getVip() {
 		return vip;
