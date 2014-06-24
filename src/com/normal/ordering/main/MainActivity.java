@@ -2,7 +2,6 @@ package com.normal.ordering.main;
 
 import com.normal.ordering.R;
 import com.normal.ordering.entities.User;
-import com.normal.ordering.tools.SmartBarUtils;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -35,13 +34,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private OrderFragment orderFragment;
 	private UserFragment userFragment;
 	private MoreFragment moreFragment;
-	public User user;
 	// 定义布局对象
 	private FrameLayout discountFrameLayout, orderFrameLayout, userFrameLayout,
 			moreFrameLayout;
 	private ImageView userImageView, moreImageView;
 	private TextView discounTextView;
-	private int lastOnclick;// 上次点击的按钮ID
+	private int lastOnclick;// 上次点击的按钮ID,后续可能使用
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +48,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		initView();
 		initData();
 		Bundle bundle = getIntent().getExtras();
-		if(bundle!=null){
-		// 获取需要到哪个fragment
-		String gotoString = bundle.getString("gotoString");
-		user = (User) bundle.getSerializable("user");
-		// 确认是从登陆界面登陆成功跳转过来的
-		if (gotoString != null && user != null) {
-			if(gotoString.equals("UserFragment")){
-				clickBottomTabUserBtn();
-				lastOnclick = R.id.bottom_tab_user;
+		if (bundle != null) {
+			// 获取需要到哪个fragment
+			String gotoString = bundle.getString("gotoString");
+			// 确认是从登陆界面登陆成功跳转过来的
+			if (gotoString != null) {
+				if (gotoString.equals("UserFragment")) {
+					clickBottomTabUserBtn();
+					lastOnclick = R.id.bottom_tab_user;
+				}
 			}
-		}} else {
+		} else {
 			// 初始化默认为选中点击了“打折”按钮
 			clickBottomTabDiscountBtn();
 			lastOnclick = R.id.bottom_tab_discount;
@@ -214,11 +212,4 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		moreImageView.setSelected(true);
 	}
 
-	/**
-	 * 改变显示的按钮图片为正常状态
-	 */
-	private void changeButtonImage() {
-		// plusImageView.setImageResource(R.drawable.toolbar_plus);
-		// toggleImageView.setImageResource(R.drawable.toolbar_btn_normal);
-	}
 }

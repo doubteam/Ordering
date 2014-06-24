@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import com.normal.ordering.R;
 import com.normal.ordering.entities.User;
 import com.normal.ordering.main.MainActivity;
+import com.normal.ordering.tools.IApplication;
 import com.normal.ordering.tools.IsConnect;
 
 import android.app.Activity;
@@ -288,16 +289,15 @@ public class LoginActivity extends Activity implements OnClickListener {
 								"帐号或密码错误！", Toast.LENGTH_LONG).show();
 					} else {// 登陆成功后的代码
 						Toast.makeText(mActivity.get().getApplicationContext(),
-								"登陆成功" + user.getUserEmail(), Toast.LENGTH_LONG)
+								"登陆成功", Toast.LENGTH_LONG)
 								.show();
 						Intent intent = new Intent(mActivity.get(),
 								MainActivity.class);
 						Bundle bundle = new Bundle();
 						// 告诉主Actcivity 启动哪个Fragment
 						bundle.putString("gotoString", "UserFragment");
-						// 传递user对象
-						bundle.putSerializable("user", user);
-						intent.putExtras(bundle);
+						//把用户名写入application
+						IApplication.getInstance().setUser(user);
 						mActivity.get().startActivity(intent);
 					}
 				}

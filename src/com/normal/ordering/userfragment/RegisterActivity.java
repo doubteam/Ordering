@@ -88,9 +88,6 @@ public class RegisterActivity extends Activity implements OnClickListener {
 		InputStream in = null;
 		String results = null;
 		try {
-			// method=province
-			// method=city&id=1
-			// method=area&id=5
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("loginName", useremail);
 			params.put("&loginPassword", userpassword);
@@ -173,13 +170,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_register);
 		initView();
 		initData();
-		btnResgister.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View view) {
-
-			}
-		});
+		
 	}
 
 	private void initView() {

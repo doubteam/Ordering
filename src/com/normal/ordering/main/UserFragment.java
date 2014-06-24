@@ -1,6 +1,8 @@
 package com.normal.ordering.main;
 
 import com.normal.ordering.R;
+import com.normal.ordering.entities.User;
+import com.normal.ordering.tools.IApplication;
 import com.normal.ordering.userfragment.LoginActivity;
 
 import android.support.v4.app.Fragment;
@@ -37,15 +39,12 @@ public class UserFragment extends Fragment implements OnClickListener {
 		super.onActivityCreated(savedInstanceState);
 		initView();
 		initData();
-
-		// if (((MainActivity) getActivity().getParent().getBaseContext()).user
-		// != null)
-		// Toast.makeText(
-		// getActivity(),
-		// "user:"
-		// + ((MainActivity) getActivity().getParent()
-		// .getApplicationContext()).user
-		// .getUserEmail(), 1000).show();
+		if(IApplication.getInstance().getUser()!=null){
+			User user=IApplication.getInstance().getUser();
+		Toast.makeText(getActivity(), user.getUserName()+ "",
+				1000).show();
+		
+		}
 		//
 	}
 
