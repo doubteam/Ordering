@@ -32,9 +32,9 @@ public class DiscountAdapter extends ArrayAdapter<DiscountFood> {
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		DiscountFood student = this.getItem(position);
-		String storeName = student.getStoreName();
-		String discountText = student.getDiscountText();
+		DiscountFood discountFood = this.getItem(position);
+		String storeName = discountFood.getStoreName();
+		String discountText = discountFood.getDiscountText();
 		LinearLayout view = null;
 		if (convertView == null) {
 			view = (LinearLayout) this.mInflater
@@ -53,7 +53,7 @@ public class DiscountAdapter extends ArrayAdapter<DiscountFood> {
 		txtContent.setText(discountText.toString());
 		txtName.setText(storeName);
 		
-			image.setTag(imagePaths.get(position).equals("")||imagePaths.get(position)==null?null:imagePaths.get(position));
+			image.setTag((imagePaths.get(position).equals("")||imagePaths.get(position)==null)?null:imagePaths.get(position));
 			new AsyncViewTask().execute(image);
 			Log.i("Adapter", imagePaths.get(position)+"当前位置："+position + "   总个数:"
 					+ this.getCount());
