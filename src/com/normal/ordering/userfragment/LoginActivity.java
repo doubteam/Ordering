@@ -301,6 +301,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 						mActivity.get().startActivity(intent);
 					}
 				}
+				//测试
 			}
 		}
 	}
