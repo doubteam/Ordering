@@ -7,8 +7,10 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,6 +38,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.GridLayout;
+import android.widget.GridView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 /**
@@ -54,6 +59,7 @@ public class DiscountFragment extends Fragment {
 	private List<String> imagePath = new ArrayList<String>();
 	private static String businessActivity;
 	private int discountCounts;
+	private GridView gridView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,6 +74,25 @@ public class DiscountFragment extends Fragment {
 
 		this.listview = (MyListView) fragmentView
 				.findViewById(R.id.discount_fragment_list_view);
+		this.gridView = (GridView) fragmentView
+				.findViewById(R.id.discount_fragment_grid_view);
+		// 准备要添加的数据条目
+		List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
+		for (int i = 0; i < 8; i++) {
+			Map<String, Object> item = new HashMap<String, Object>();
+			item.put("imageItem", R.drawable.refresh_image);// 添加图像资源的ID
+			item.put("textItem", "icon" + i);// 按序号添加ItemText
+			items.add(item);
+		}
+
+		// 实例化一个适配器
+		SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), items,
+				R.layout.fragment_discount_gridview_content, new String[] {
+						"imageItem", "textItem" }, new int[] {
+						R.id.fragment_discount_gridview_img,
+						R.id.fragment_discount_gridview_text });
+		// 为GridView设置适配器
+		gridView.setAdapter(adapter);
 		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setTitle("请等待");
 		progressDialog.setMessage("数据加载中.......");
@@ -140,6 +165,8 @@ public class DiscountFragment extends Fragment {
 					((DiscountFragment) mActivity.get()).initList();// 初始化数据
 					((DiscountFragment) mActivity.get()).listview
 							.onRefreshComplete();// 刷新完成
+					((DiscountFragment) mActivity.get()).listview
+							.setSelection(0);
 				}
 				if (flag == 2) {
 					Toast.makeText(mActivity.get().getActivity(), "数据获取失败",
@@ -255,11 +282,12 @@ public class DiscountFragment extends Fragment {
 			}
 		}
 	}
+
 	/**
 	 * 适配器 初始化List
 	 */
 	private void initList() {
-		
+
 		discountCounts = imagePath.size();
 		adapter = new DiscountAdapter(getActivity(),
 				R.layout.fragment_discount_listview_content,
