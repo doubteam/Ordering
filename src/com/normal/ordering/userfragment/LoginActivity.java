@@ -296,7 +296,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 						Bundle bundle = new Bundle();
 						// 告诉主Actcivity 启动哪个Fragment
 						bundle.putString("gotoString", "UserFragment");
-						//把用户名写入application
+						//把用户信息写入application
 						IApplication.getInstance().setUser(user);
 						mActivity.get().startActivity(intent);
 					}
