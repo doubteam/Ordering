@@ -10,10 +10,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-         android:name="com.normal.ordering.tools.IApplication"
+        android:name="com.normal.ordering.tools.IApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/myicon"
@@ -24,6 +24,7 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -35,6 +36,23 @@
             android:name="com.normal.ordering.userfragment.RegisterActivity"
             android:label="@string/activity_register_label" >
         </activity>
+        <!-- permission 加上后，要求使用这个服务的应用程序必须定义和使用权限 -->
+        <!--
+        <service
+            android:name=".PushService"
+            android:enabled="true"
+            android:permission="com.normal.ordering.Push_SERVICE_PERMISSION" >
+        -->
+        <!--
+            <intent-filter>
+                <action android:name="com.demo.ex021.MY_SERVICE"/>
+            </intent-filter>
+               </service>
+        -->
+         <service
+            android:name="com.normal.ordering.service.PushService"
+            android:enabled="true" >
+        </service>
     </application>
 
 </manifest>

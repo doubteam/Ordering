@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +23,9 @@ import com.normal.ordering.tools.IsConnect;
 
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,7 +33,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -297,6 +291,7 @@ public class DiscountFragment extends Fragment {
 		listview.setOnRefreshListener(new OnRefreshListener()
 		// 刷新
 		{
+			@Override
 			public void onRefresh() {
 				getDiscountFoodList();
 			}

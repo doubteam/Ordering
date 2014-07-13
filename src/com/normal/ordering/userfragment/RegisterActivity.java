@@ -15,17 +15,11 @@ import org.json.JSONObject;
 
 import com.normal.ordering.R;
 import com.normal.ordering.tools.IsConnect;
-import com.normal.ordering.tools.SmartBarUtils;
-
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -170,7 +164,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_register);
 		initView();
 		initData();
-		
+
 	}
 
 	private void initView() {

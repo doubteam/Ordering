@@ -3,6 +3,10 @@ package com.normal.ordering.entities;
 import java.io.Serializable;
 
 public class User implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String userName;//用户昵称
 	private String userEmail;//登录名（邮箱）
 	private String userPassword;//密码

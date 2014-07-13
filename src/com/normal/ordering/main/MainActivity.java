@@ -1,27 +1,14 @@
 package com.normal.ordering.main;
 
 import com.normal.ordering.R;
-import com.normal.ordering.entities.User;
-
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.ActionBar.Tab;
-import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * 主界面 兼容SmartBar 使用了ActionBar

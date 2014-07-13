@@ -20,6 +20,7 @@ import android.view.View;
 
 import android.view.ViewGroup;
 
+import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 
 import android.view.animation.RotateAnimation;
@@ -157,9 +158,9 @@ public class MyListView extends ListView implements OnScrollListener {
 
 		animation = new RotateAnimation(0, -180,
 
-		RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+		Animation.RELATIVE_TO_SELF, 0.5f,
 
-		RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+		Animation.RELATIVE_TO_SELF, 0.5f);
 
 		animation.setInterpolator(new LinearInterpolator());
 		animation.setDuration(250);
@@ -168,9 +169,9 @@ public class MyListView extends ListView implements OnScrollListener {
 
 		reverseAnimation = new RotateAnimation(-180, 0,
 
-		RotateAnimation.RELATIVE_TO_SELF, 0.5f,
+		Animation.RELATIVE_TO_SELF, 0.5f,
 
-		RotateAnimation.RELATIVE_TO_SELF, 0.5f);
+		Animation.RELATIVE_TO_SELF, 0.5f);
 
 		reverseAnimation.setInterpolator(new LinearInterpolator());
 
@@ -184,15 +185,18 @@ public class MyListView extends ListView implements OnScrollListener {
 
 	}
 
+	@Override
 	public void onScroll(AbsListView arg0, int firstVisiableItem, int arg2,
 			int arg3) {
 		firstItemIndex = firstVisiableItem;
 		// Log.v(TAG, "firstItemIndex: "+firstItemIndex);
 	}
 
+	@Override
 	public void onScrollStateChanged(AbsListView arg0, int arg1) {
 	}
 
+	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		// Log.v(TAG, "isRefreshable: "+isRefreshable);
 		if (isRefreshable) {

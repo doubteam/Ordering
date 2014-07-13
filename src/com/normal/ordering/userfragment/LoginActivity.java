@@ -19,7 +19,10 @@ import com.normal.ordering.tools.IsConnect;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,6 +44,21 @@ public class LoginActivity extends Activity implements OnClickListener {
 	private static ProgressDialog progressDialog;
 	private static User user;
 	private static String getResults;
+	// 相当于JSP里面的Cookie
+	private SharedPreferences sp;
+	private static final String SP_NAME = "ORDERING";
+	private static final String SP_LOGIN_NAME = "ORDERING_LOGIN_NAME";
+	private static final String SP_LOGIN_PASSWORD = "ORDERING_LOGIN_PASSWORD";
+	private static final String SP_SUCCESS_LOGIN = "ORDERING_SUCCESS_LOGIN";
+	Editor editor = null;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_login);
+		initView();
+		initData();
+	}
 
 	/**
 	 * 发送POST请求
@@ -163,15 +181,6 @@ public class LoginActivity extends Activity implements OnClickListener {
 		return user;
 	}
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_login);
-		initView();
-		initData();
-	}
-
 	/**
 	 * 初始化组件
 	 */
@@ -192,13 +201,17 @@ public class LoginActivity extends Activity implements OnClickListener {
 		progressDialog.setCancelable(true);
 		// 是否明确进度
 		progressDialog.setIndeterminate(true);
+		// 初始化sp，并划定你的存储|取值的区域
+		this.sp = this.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		this.initState();
+
 	}
 
 	/**
 	 * 初始化数据
 	 */
 	private void initData() {
-
+		editor = sp.edit();
 		btnLogin.setOnClickListener(this);
 		textRegister.setOnClickListener(this);
 	}
@@ -218,6 +231,20 @@ public class LoginActivity extends Activity implements OnClickListener {
 		}
 	}
 
+	/**
+	 * cookies 获取用户帐号，密码
+	 */
+	private void initState() {
+		String defaultLoginName = this.sp.getString(SP_LOGIN_NAME, null);
+		String defaultLoginPassword = this.sp
+				.getString(SP_LOGIN_PASSWORD, null);
+		// boolean isDefaultSuccessLogin = this.sp.getBoolean(SP_SUCCESS_LOGIN,
+		// false);
+		mLoginEmail.setText(defaultLoginName);
+		mLoginPassword.setText(defaultLoginPassword);
+
+	}
+
 	private void clickLoginBtn() {
 		if (IsConnect.isConnect(getApplicationContext())) { // 确定网络已经连接
 			final String getLoginEmail = mLoginEmail.getText().toString();
@@ -228,6 +255,10 @@ public class LoginActivity extends Activity implements OnClickListener {
 					// progressDialog.show();
 					proBarLogin.setVisibility(0);// 可见进度条0 4 8
 					btnLogin.setEnabled(false);// 按钮变灰
+					// 记住帐号，密码
+					editor.putString(SP_LOGIN_NAME, getLoginEmail);
+					// 安全性，密码要加密变成密文放入sp
+					editor.putString(SP_LOGIN_PASSWORD, getLoginPassword);
 					new Thread(new Runnable() {
 
 						@Override
@@ -285,23 +316,28 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 				if (flag == 1) {
 					if (getResults.equals("failed")) {
+						((LoginActivity) mActivity.get()).editor.putBoolean(
+								SP_SUCCESS_LOGIN, false);
+						((LoginActivity) mActivity.get()).editor.commit();
 						Toast.makeText(mActivity.get().getApplicationContext(),
 								"帐号或密码错误！", Toast.LENGTH_LONG).show();
 					} else {// 登陆成功后的代码
+						((LoginActivity) mActivity.get()).editor.putBoolean(
+								SP_SUCCESS_LOGIN, true);
+						((LoginActivity) mActivity.get()).editor.commit();
 						Toast.makeText(mActivity.get().getApplicationContext(),
-								"登陆成功", Toast.LENGTH_LONG)
-								.show();
+								"登陆成功", Toast.LENGTH_LONG).show();
+						// 把用户信息写入application
+						IApplication.getInstance().setUser(user);
 						Intent intent = new Intent(mActivity.get(),
 								MainActivity.class);
 						Bundle bundle = new Bundle();
 						// 告诉主Actcivity 启动哪个Fragment
 						bundle.putString("gotoString", "UserFragment");
-						//把用户信息写入application
-						IApplication.getInstance().setUser(user);
+						intent.putExtras(bundle);
 						mActivity.get().startActivity(intent);
 					}
 				}
-				//测试数据
 			}
 		}
 	}

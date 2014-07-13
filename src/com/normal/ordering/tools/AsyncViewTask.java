@@ -6,8 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 
-import com.normal.ordering.main.DiscountFragment;
-
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -18,60 +16,64 @@ import android.webkit.URLUtil;
 public class AsyncViewTask extends AsyncTask<View, Void, Drawable> {
 
 	private View mView;
-    private HashMap<String, SoftReference<Drawable>> imageCache;
- 
-    public AsyncViewTask() {
-        imageCache = new HashMap<String, SoftReference<Drawable>>();
-    }
-    /**
-     * 耗时操作都放在这里
-     */
+	private HashMap<String, SoftReference<Drawable>> imageCache;
+
+	public AsyncViewTask() {
+		imageCache = new HashMap<String, SoftReference<Drawable>>();
+	}
+
+	/**
+	 * 耗时操作都放在这里
+	 */
 	@Override
 	protected Drawable doInBackground(View... views) {
-		 Drawable drawable = null;
-	        View view = views[0];
-	        if (view.getTag() != null) {
-	            if (imageCache.containsKey(view.getTag())) {
-	                SoftReference<Drawable> cache = imageCache.get(view.getTag().toString());
-	                drawable = cache.get();
-	                if (drawable != null) {
-	                    return drawable;
-	                }
-	            }
-	            try {
-	                if (URLUtil.isHttpUrl(view.getTag().toString())) {// 如果为网络地址。则连接url下载图片
-	                	//  采用 HTTP:// 判断是否为URL
-	                    URL url = new URL(view.getTag().toString());
-	                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-	                    conn.setDoInput(true);
-	                    conn.connect();
-	                    InputStream stream = conn.getInputStream();
-	                    drawable = Drawable.createFromStream(stream, "src");
-	                    stream.close();
-	                  //  Log.i("adapter",);
-	                } else {// 如果为本地数据，直接解析
-	                    drawable = Drawable.createFromPath(view.getTag().toString());
-	                }
-	            } catch (Exception e) {
-	                Log.v("img", e.getMessage());
-	                return null;
-	            }
-	        }
-	        else {//没有图片
+		Drawable drawable = null;
+		View view = views[0];
+		if (view.getTag() != null) {
+			if (imageCache.containsKey(view.getTag())) {
+				SoftReference<Drawable> cache = imageCache.get(view.getTag()
+						.toString());
+				drawable = cache.get();
+				if (drawable != null) {
+					return drawable;
+				}
+			}
+			try {
+				if (URLUtil.isHttpUrl(view.getTag().toString())) {// 如果为网络地址。则连接url下载图片
+					// 采用 HTTP:// 判断是否为URL
+					URL url = new URL(view.getTag().toString());
+					HttpURLConnection conn = (HttpURLConnection) url
+							.openConnection();
+					conn.setDoInput(true);
+					conn.connect();
+					InputStream stream = conn.getInputStream();
+					drawable = Drawable.createFromStream(stream, "src");
+					stream.close();
+					// Log.i("adapter",);
+				} else {// 如果为本地数据，直接解析
+					drawable = Drawable
+							.createFromPath(view.getTag().toString());
+				}
+			} catch (Exception e) {
+				Log.v("img", e.getMessage());
 				return null;
 			}
-	        this.mView = view;
-	        return drawable;
+		} else {// 没有图片
+			return null;
+		}
+		this.mView = view;
+		return drawable;
 	}
+
 	/**
-	 * 更新UI
-	 * 有点类似Handler
+	 * 更新UI 有点类似Handler
 	 */
+	@Override
 	@SuppressLint("NewApi")
 	protected void onPostExecute(Drawable drawable) {
-        if (drawable != null) {
-            this.mView.setBackground(drawable);
-            this.mView = null;
-        }
-    }
+		if (drawable != null) {
+			this.mView.setBackground(drawable);
+			this.mView = null;
+		}
+	}
 }

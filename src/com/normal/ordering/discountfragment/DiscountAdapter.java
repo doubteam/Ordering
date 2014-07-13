@@ -31,6 +31,7 @@ public class DiscountAdapter extends ArrayAdapter<DiscountFood> {
 		this.imagePaths.addAll(imagePaths);
 	}
 
+	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		DiscountFood discountFood = this.getItem(position);
 		String storeName = discountFood.getStoreName();
