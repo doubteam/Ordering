@@ -27,5 +27,8 @@
     <string name="activity_register_label">注册</string>
      <string name="fragment_discount_list_view_content_img_view_content_description">打折活动图片</string>
      <string name="bottom_tab_image_view_content_description">底栏菜单图片</string>
+      <string name="fragment_user_logined_text_vipintegral">账户积分：</string>
+     <string name="fragment_user_logined_imageview_img">用户头像</string>
+     <string name="fragment_user_logined_btn_myordering">我的订单</string>
 
 </resources>

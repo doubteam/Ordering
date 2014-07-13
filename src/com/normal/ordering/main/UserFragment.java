@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -25,25 +27,43 @@ import android.widget.Toast;
  */
 public class UserFragment extends Fragment implements OnClickListener {
 	private Button btnLogin;
+	private Button btnMyOrdering;
+	private ImageView imgView;
+	private TextView txtLoginName;
+	private TextView txtIntegral;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View fragmentView = inflater.inflate(R.layout.fragment_user, container,
-				false);
+		View fragmentView;
+		if (IApplication.getInstance().getUser() != null) {
+			fragmentView = inflater.inflate(R.layout.fragment_user_logined,
+					container, false);
+		} else {
+			fragmentView = inflater.inflate(R.layout.fragment_user, container,
+					false);
+		}
 		return fragmentView;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		initView();
-		initData();
-		if(IApplication.getInstance().getUser()!=null){
-			User user=IApplication.getInstance().getUser();
-		Toast.makeText(getActivity(), user.getUserName()+ "",
-				1000).show();
-		
+		/*
+		 * 当user中有用户信息时
+		 */
+		if (IApplication.getInstance().getUser() != null) {
+			User user = IApplication.getInstance().getUser();
+			Toast.makeText(getActivity(), user.getUserName() + "", 1000).show();
+			initView(true);
+			initData(user);
+
+		} else {
+			/*
+			 * user中没有用户信息时
+			 */
+			initView(false);
+			initData(null);
 		}
 		//
 	}
@@ -51,18 +71,37 @@ public class UserFragment extends Fragment implements OnClickListener {
 	/**
 	 * 初始化组件
 	 */
-	private void initView() {
-		btnLogin = (Button) getActivity().findViewById(
-				R.id.frament_user_btn_login);
+	private void initView(boolean IsLogined) {
 
+		if (IsLogined) {// 如果已经登陆
+			imgView = (ImageView) getActivity().findViewById(
+					R.id.fragment_user_logined_img_loginimgview);
+			txtLoginName = (TextView) getActivity().findViewById(
+					R.id.fragment_user_logined_text_loginname);
+			txtIntegral = (TextView) getActivity().findViewById(
+					R.id.fragment_user_logined_text_integral);
+			btnMyOrdering = (Button) getActivity().findViewById(
+					R.id.fragment_user_logined_btn_myordering);
+		} else {
+			btnLogin = (Button) getActivity().findViewById(
+					R.id.frament_user_btn_login);
+		}
 	}
 
 	/**
 	 * 初始化数据
 	 */
-	private void initData() {
-		// 给布局对象设置监听
-		btnLogin.setOnClickListener(this);
+	private void initData(User user) {
+		if (user != null) {
+			imgView.setImageResource(R.drawable.ic_launcher);
+			txtLoginName.setText(user.getUserName());
+			txtIntegral.setText(user.getIntegration());
+			// 给布局对象设置监听
+			btnMyOrdering.setOnClickListener(this);
+		} else {
+			btnLogin.setOnClickListener(this);
+		}
+
 	}
 
 	@Override
@@ -72,6 +111,8 @@ public class UserFragment extends Fragment implements OnClickListener {
 		case R.id.frament_user_btn_login:
 			clickLoginBtn();
 			break;
+		case R.id.fragment_user_logined_btn_myordering:
+			clickMyOrderingBtn();
 
 		}
 	}
@@ -80,6 +121,10 @@ public class UserFragment extends Fragment implements OnClickListener {
 		Intent intent = new Intent();
 		intent.setClass(getActivity(), LoginActivity.class);
 		startActivity(intent);
+	}
+
+	public void clickMyOrderingBtn() {
+
 	}
 
 }
