@@ -49,6 +49,7 @@
             </intent-filter>
                </service>
         -->
+        
          <service
             android:name="com.normal.ordering.service.PushService"
             android:enabled="true" >

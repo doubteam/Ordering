@@ -8,11 +8,15 @@ import com.normal.ordering.userfragment.LoginActivity;
 
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 
+import android.os.Binder;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,24 +39,14 @@ public class UserFragment extends Fragment implements OnClickListener {
 	private ImageView imgView;
 	private TextView txtLoginName;
 	private TextView txtIntegral;
-	private SharedPreferences sp;
 	private static User user;
-	private static final String SP_NAME = "ORDERING";
-	private static final String SP_LOGIN_NAME = "ORDERING_LOGIN_NAME";
-	private static final String SP_LOGIN_PASSWORD = "ORDERING_LOGIN_PASSWORD";
-	private static final String SP_SUCCESS_LOGIN = "ORDERING_SUCCESS_LOGIN";
-	private ProgressDialog progressDialog;
+	private static final String TAG = "UserFragment";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View fragmentView;
-		// 初始化sp，并划定你的存储|取值的区域
-		this.sp = this.getActivity().getSharedPreferences(SP_NAME,
-				Context.MODE_PRIVATE);
-		if (IApplication.getInstance().getUser() != null
-				|| sp.getBoolean(SP_SUCCESS_LOGIN, false)) {
-			Log.d("3", sp.getString(SP_LOGIN_PASSWORD, null)+sp.getBoolean(SP_SUCCESS_LOGIN, false)+"");
+		if (IApplication.getInstance().getUser() != null) {
 			fragmentView = inflater.inflate(R.layout.fragment_user_logined,
 					container, false);
 		} else {
@@ -65,14 +59,7 @@ public class UserFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		progressDialog = new ProgressDialog(getActivity());
-		progressDialog.setTitle("请等待");
-		progressDialog.setMessage("数据加载中.......");
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		// 设置ProgressDialgo是否能够被取消
-		progressDialog.setCancelable(false);
-		// 明确进度
-		progressDialog.setIndeterminate(true);
+
 		/*
 		 * 当user中有用户信息时(已经登陆)
 		 */
@@ -84,22 +71,11 @@ public class UserFragment extends Fragment implements OnClickListener {
 			/**
 			 * 未登陆，但是SharedPreferences有正确的帐号密码。
 			 */
-		} else if (IApplication.getInstance().getUser() == null
-				&& sp.getBoolean(SP_SUCCESS_LOGIN, false)) {
-			/**
-			 * 隐式的启动Service 如果在同一个包中。两者都可以用。在不同包时。只能用隐式启动
-			 * 
-			 * Intent intent = new Intent(PushService.ACTION);
-			 */
-			// TODO: 这里加入之前的数据，写入数据库的数据来初始化界面，不然太难看。后续加入
-			Intent intent = new Intent(getActivity().getApplicationContext(), PushService.class);
-			intent.putExtra("ServiceContent", "Login");
-			this.getActivity().startService(intent);
-			Log.d("3", "启动服务");
-			progressDialog.show();
-			
+		}
+		
+		
 
-		} else {
+		else {
 			/*
 			 * user中没有用户信息时
 			 */
@@ -168,7 +144,9 @@ public class UserFragment extends Fragment implements OnClickListener {
 	}
 
 	public void clickMyOrderingBtn() {
-
+		Intent intent = new Intent();
+		intent.setClass(getActivity(), LoginActivity.class);
+		startActivity(intent);
 	}
 
 }

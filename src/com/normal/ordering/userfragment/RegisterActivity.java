@@ -72,7 +72,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 		return results;
 	}
 
-	private void uplaodUser(String useremail, String userpassword,
+	private void uploadUser(String useremail, String userpassword,
 			String username) throws Exception {
 		URL url = null;
 		HttpURLConnection urlConnection = null;
@@ -230,7 +230,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 						@Override
 						public void run() {
 							try {
-								uplaodUser(getResigsterEmail,
+								uploadUser(getResigsterEmail,
 										getRegisterPassword,
 										getResgisterUserName);
 								myHandler.sendEmptyMessage(1);

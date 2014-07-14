@@ -246,7 +246,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 	}
 
 	private void clickLoginBtn() {
-		if (IsConnect.isConnect(getApplicationContext())) { // 确定网络已经连接
+		if (IsConnect.isConnect(this)) { // 确定网络已经连接
 			final String getLoginEmail = mLoginEmail.getText().toString();
 			final String getLoginPassword = mLoginPassword.getText().toString();
 			if (getLoginEmail.length() > 0 && getLoginPassword.length() > 0) {

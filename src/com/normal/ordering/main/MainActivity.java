@@ -1,14 +1,24 @@
 package com.normal.ordering.main;
 
 import com.normal.ordering.R;
+import com.normal.ordering.service.PushService;
+import com.normal.ordering.tools.IApplication;
+
+import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * 主界面 兼容SmartBar 使用了ActionBar
@@ -25,8 +35,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private FrameLayout discountFrameLayout, orderFrameLayout, userFrameLayout,
 			moreFrameLayout;
 	private ImageView userImageView, moreImageView;
-	private TextView discounTextView;
-	private int lastOnclick;// 上次点击的按钮ID,后续可能使用
+	private PushService pushService;
+	private SharedPreferences sp;
+	private static final String SP_NAME = "ORDERING";
+	private static final String SP_LOGIN_NAME = "ORDERING_LOGIN_NAME";
+	private static final String SP_LOGIN_PASSWORD = "ORDERING_LOGIN_PASSWORD";
+	private static final String SP_SUCCESS_LOGIN = "ORDERING_SUCCESS_LOGIN";
+	private static final String TAG = "MainActivity";
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +50,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		setContentView(R.layout.activity_main);
 		initView();
 		initData();
+		// 未登陆但是SharedPreferences有正确的帐号和密码
+		if (IApplication.getInstance().getUser() == null
+				&& sp.getBoolean(SP_SUCCESS_LOGIN, false)) {
+			userLogin();
+		}
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null) {
 			// 获取需要到哪个fragment
@@ -42,13 +63,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			if (gotoString != null) {
 				if (gotoString.equals("UserFragment")) {
 					clickBottomTabUserBtn();
-					lastOnclick = R.id.bottom_tab_user;
+					
 				}
 			}
 		} else {
 			// 初始化默认为选中点击了“打折”按钮
 			clickBottomTabDiscountBtn();
-			lastOnclick = R.id.bottom_tab_discount;
+			
 		}
 	}
 
@@ -77,6 +98,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		orderFrameLayout.setOnClickListener(this);
 		userFrameLayout.setOnClickListener(this);
 		moreFrameLayout.setOnClickListener(this);
+		// 初始化sp，并划定你的存储|取值的区域
+		this.sp = this.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setTitle("请等待");
+		progressDialog.setMessage("数据加载中.......");
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		// 设置ProgressDialgo是否能够被取消
+		progressDialog.setCancelable(false);
+		// 明确进度
+		progressDialog.setIndeterminate(true);
 	}
 
 	@Override
@@ -100,7 +131,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			break;
 
 		}
-		lastOnclick = v.getId();// 记录点击过后的ID
 	}
 
 	/**
@@ -199,4 +229,47 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		moreImageView.setSelected(true);
 	}
 
+	/**
+	 * 自动登陆
+	 */
+	private void userLogin() {
+
+		/**
+		 * 隐式的启动Service 如果在同一个包中。两者都可以用。在不同包时。只能用隐式启动
+		 * 
+		 * Intent intent = new Intent(PushService.ACTION);
+		 */
+		Intent intent = new Intent(this, PushService.class);
+		this.bindService(intent, conn, Context.BIND_AUTO_CREATE);
+		Log.d(TAG, "启动服务");
+
+	}
+
+	/**
+	 * 服务链接
+	 */
+	private ServiceConnection conn = new ServiceConnection() {
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			Log.d(TAG, "onServiceDisconnected");
+			pushService = null;
+		}
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			Log.d(TAG, "onServiceConnected");
+			pushService = ((PushService.ServiceBinder) service).getService();
+			// progressDialog.show();
+			pushService.onLogin(sp.getString(SP_LOGIN_NAME, null),
+					sp.getString(SP_LOGIN_PASSWORD, null));
+		}
+
+	};
+
+	protected void onDestroy() {
+		super.onDestroy();
+		this.unbindService(conn);
+		Log.v("Services", "out");
+	}
 }

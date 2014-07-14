@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -14,18 +13,17 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.normal.ordering.entities.User;
-import com.normal.ordering.main.MainActivity;
 import com.normal.ordering.tools.IApplication;
+import com.normal.ordering.tools.IsConnect;
 
 import android.app.ProgressDialog;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.Handler;
+import android.os.Binder;
+
 import android.os.IBinder;
-import android.os.Message;
+
 import android.util.Log;
 
 public class PushService extends Service {
@@ -36,10 +34,7 @@ public class PushService extends Service {
 	private static String getResults;
 	private static User user;
 	private static ProgressDialog progressDialog;
-	private static final String SP_NAME = "ORDERING";
-	private static final String SP_LOGIN_NAME = "ORDERING_LOGIN_NAME";
-	private static final String SP_LOGIN_PASSWORD = "ORDERING_LOGIN_PASSWORD";
-	private static final String SP_SUCCESS_LOGIN = "ORDERING_SUCCESS_LOGIN";
+	private ServiceBinder serviceBinder = new ServiceBinder();
 
 	/**
 	 * 绑定方法，结构必须保留 意思：将一个Service是生命周期和其他组件关联
@@ -47,8 +42,9 @@ public class PushService extends Service {
 	 */
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.d(TAG, "Unbind");
-		return null;
+		Log.d(TAG, "onbind");
+
+		return serviceBinder;
 	}
 
 	/**
@@ -66,7 +62,7 @@ public class PushService extends Service {
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
-		
+
 	}
 
 	/**
@@ -75,6 +71,31 @@ public class PushService extends Service {
 	@Override
 	public void onDestroy() {
 		Log.d(TAG, "onDestroy");
+	}
+
+	public void onLogin(final String loginName, final String loginPassword) {
+		if (IsConnect.isConnect(this)) {//保证联网状态
+			Log.d(TAG, "onLogin:" + loginName + "    " + loginPassword);
+			try {
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						try {
+							user = uploadUser(loginName, loginPassword);
+							IApplication.getInstance().setUser(user);
+						} catch (Exception e) {
+
+							e.printStackTrace();
+						}
+
+					}
+				}).start();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
 	}
 
 	/**
@@ -98,72 +119,17 @@ public class PushService extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// 初始化sp，并划定你的存储|取值的区域
-		this.sp = this.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
 		Log.d(TAG, "onStartCommand");
-		String content = (String) intent.getSerializableExtra("ServiceContent");
-		if (content.equals("Login")) {
-			try {
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-
-						try {
-							user = uploadUser(
-									sp.getString(SP_LOGIN_NAME, null),
-									sp.getString(SP_LOGIN_PASSWORD, null));
-							myHandler.sendEmptyMessage(1);
-						} catch (Exception e) {
-							myHandler.sendEmptyMessage(0);
-							e.printStackTrace();
-						}
-
-					}
-				}).start();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		Log.d(TAG, content);
 		Log.d(TAG, "flags:" + flags + "");
 		Log.d(TAG, "startId:" + startId + "");
 		return Service.START_STICKY;
 	}
 
-	private MyHandler myHandler = new MyHandler(this);
-
-	private static class MyHandler extends Handler {
-
-		private final WeakReference<Service> mService;
-
-		public MyHandler(PushService pushService) {
-			mService = new WeakReference<Service>(pushService);
-		}
-
-		@Override
-		public void handleMessage(Message msg) {
-			if (msg != null) {
-				int flag = msg.what;
-
-				if (progressDialog != null) {
-					progressDialog.dismiss();// 关闭
-				}
-
-				if (flag == 1) {
-					// 把用户信息写入application
-					IApplication.getInstance().setUser(user);
-					Intent intent = new Intent(mService.get(),
-							MainActivity.class);
-					Bundle bundle = new Bundle();
-					// 告诉主Actcivity 启动哪个Fragment
-					bundle.putString("gotoString", "UserFragment");
-					intent.putExtras(bundle);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					mService.get().startActivity(intent);
-					//mService.get().onDestroy();
-				}
-			}
+	// 此方法是为了可以在Acitity中获得服务的实例
+	public class ServiceBinder extends Binder {
+		public PushService getService() {
+			Log.d(TAG, "getService()");
+			return PushService.this;
 		}
 	}
 
@@ -270,6 +236,8 @@ public class PushService extends Service {
 			user.setUserPassword(userInformation.getString("loginPassword"));
 
 		} catch (Exception e) {
+			
+			
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -287,5 +255,31 @@ public class PushService extends Service {
 		}
 		return user;
 	}
-
+	// private MyHandler myHandler = new MyHandler(this);
+	//
+	// private static class MyHandler extends Handler {
+	//
+	// private final WeakReference<Activity> mActivity;
+	//
+	// public MyHandler(LoginActivity loginActivity) {
+	// mActivity = new WeakReference<Activity>(loginActivity);
+	// }
+	//
+	// @Override
+	// public void handleMessage(Message msg) {
+	// if (msg != null) {
+	// int flag = msg.what;
+	//
+	// if (progressDialog != null) {
+	// progressDialog.dismiss();// 关闭
+	// }
+	// if (flag == 1) {
+	// if (getResults.equals("failed")) {
+	// } else {// 登陆成功后的代码
+	// // 把用户信息写入application
+	// IApplication.getInstance().setUser(user);
+	// }
+	// }
+	// }
+	// }
 }
