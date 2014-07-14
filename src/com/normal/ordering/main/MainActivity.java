@@ -4,9 +4,12 @@ import com.normal.ordering.R;
 import com.normal.ordering.service.PushService;
 import com.normal.ordering.tools.IApplication;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -15,10 +18,13 @@ import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 /**
  * 主界面 兼容SmartBar 使用了ActionBar
@@ -43,6 +49,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	private static final String SP_SUCCESS_LOGIN = "ORDERING_SUCCESS_LOGIN";
 	private static final String TAG = "MainActivity";
 	private ProgressDialog progressDialog;
+	private Dialog alertDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +70,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 			if (gotoString != null) {
 				if (gotoString.equals("UserFragment")) {
 					clickBottomTabUserBtn();
-					
+
 				}
 			}
 		} else {
 			// 初始化默认为选中点击了“打折”按钮
 			clickBottomTabDiscountBtn();
-			
+
 		}
 	}
 
@@ -108,6 +115,23 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		progressDialog.setCancelable(false);
 		// 明确进度
 		progressDialog.setIndeterminate(true);
+		alertDialog = new AlertDialog.Builder(this).setTitle("提示")
+				.setMessage("确认要关闭吗？")
+				.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				})
+				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+
+					}
+				}).create();
 	}
 
 	@Override
@@ -249,13 +273,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 	 * 服务链接
 	 */
 	private ServiceConnection conn = new ServiceConnection() {
+		// 链接中执行的操作
 
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			Log.d(TAG, "onServiceDisconnected");
-			pushService = null;
-		}
-
+		// 链接成功执行的操作
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			Log.d(TAG, "onServiceConnected");
@@ -265,7 +285,24 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 					sp.getString(SP_LOGIN_PASSWORD, null));
 		}
 
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			Log.d(TAG, "onServiceDisconnected");
+			pushService = null;
+		}
 	};
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// 捕捉返回键
+			Log.d(TAG, "返回键");
+			alertDialog.show();
+		}
+
+		return super.onKeyDown(keyCode, event);
+	}
 
 	protected void onDestroy() {
 		super.onDestroy();

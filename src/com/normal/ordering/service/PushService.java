@@ -85,10 +85,8 @@ public class PushService extends Service {
 							user = uploadUser(loginName, loginPassword);
 							IApplication.getInstance().setUser(user);
 						} catch (Exception e) {
-
 							e.printStackTrace();
 						}
-
 					}
 				}).start();
 			} catch (Exception e) {
