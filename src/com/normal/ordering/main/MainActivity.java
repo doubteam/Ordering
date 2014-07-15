@@ -20,11 +20,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 /**
  * 主界面 兼容SmartBar 使用了ActionBar
@@ -265,7 +263,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		 */
 		Intent intent = new Intent(this, PushService.class);
 		this.bindService(intent, conn, Context.BIND_AUTO_CREATE);
-		Log.d(TAG, "启动服务");
+		Log.d(TAG, "绑定服务");
 
 	}
 
