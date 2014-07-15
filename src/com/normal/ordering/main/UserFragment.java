@@ -65,15 +65,12 @@ public class UserFragment extends Fragment implements OnClickListener {
 		 */
 		if (IApplication.getInstance().getUser() != null) {
 			User user = IApplication.getInstance().getUser();
-			Toast.makeText(getActivity(), user.getUserName() + "", 1000).show();
 			initView(true);
 			initData(user);
 			/**
 			 * 未登陆，但是SharedPreferences有正确的帐号密码。
 			 */
 		}
-		
-		
 
 		else {
 			/*

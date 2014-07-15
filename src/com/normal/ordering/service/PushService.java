@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -18,9 +19,12 @@ import com.normal.ordering.tools.IsConnect;
 
 import android.app.ProgressDialog;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
+import android.os.Handler;
+import android.os.Message;
 
 import android.os.IBinder;
 
@@ -33,7 +37,10 @@ public class PushService extends Service {
 	private SharedPreferences sp;
 	private static String getResults;
 	private static User user;
-	private static ProgressDialog progressDialog;
+	private static final String SP_NAME = "ORDERING";
+	private static final String SP_LOGIN_NAME = "ORDERING_LOGIN_NAME";
+	private static final String SP_LOGIN_PASSWORD = "ORDERING_LOGIN_PASSWORD";
+	private static final String SP_SUCCESS_LOGIN = "ORDERING_SUCCESS_LOGIN";
 	private ServiceBinder serviceBinder = new ServiceBinder();
 
 	/**
@@ -62,7 +69,8 @@ public class PushService extends Service {
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
-
+		// 初始化sp，并划定你的存储|取值的区域
+		this.sp = this.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
 	}
 
 	/**
@@ -74,7 +82,7 @@ public class PushService extends Service {
 	}
 
 	public void onLogin(final String loginName, final String loginPassword) {
-		if (IsConnect.isConnect(this)) {//保证联网状态
+		if (IsConnect.isConnect(this)) {// 保证联网状态
 			Log.d(TAG, "onLogin:" + loginName + "    " + loginPassword);
 			try {
 				new Thread(new Runnable() {
@@ -83,8 +91,10 @@ public class PushService extends Service {
 					public void run() {
 						try {
 							user = uploadUser(loginName, loginPassword);
-							IApplication.getInstance().setUser(user);
+							Thread.sleep(1000);
+							myHandler.sendEmptyMessage(1);
 						} catch (Exception e) {
+							myHandler.sendEmptyMessage(0);
 							e.printStackTrace();
 						}
 					}
@@ -120,6 +130,11 @@ public class PushService extends Service {
 		Log.d(TAG, "onStartCommand");
 		Log.d(TAG, "flags:" + flags + "");
 		Log.d(TAG, "startId:" + startId + "");
+		// SharedPreferences有正确的帐号和密码
+		if (sp.getBoolean(SP_SUCCESS_LOGIN, false)) {
+			onLogin(sp.getString(SP_LOGIN_NAME, null),
+					sp.getString(SP_LOGIN_PASSWORD, null));
+		}
 		return Service.START_STICKY;
 	}
 
@@ -181,6 +196,7 @@ public class PushService extends Service {
 		InputStream in = null;
 		String results = null;
 		User user = null;
+		Log.d(TAG, "正在登陆");
 		try {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("loginName", useremail);
@@ -234,8 +250,7 @@ public class PushService extends Service {
 			user.setUserPassword(userInformation.getString("loginPassword"));
 
 		} catch (Exception e) {
-			
-			
+
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -253,31 +268,38 @@ public class PushService extends Service {
 		}
 		return user;
 	}
-	// private MyHandler myHandler = new MyHandler(this);
-	//
-	// private static class MyHandler extends Handler {
-	//
-	// private final WeakReference<Activity> mActivity;
-	//
-	// public MyHandler(LoginActivity loginActivity) {
-	// mActivity = new WeakReference<Activity>(loginActivity);
-	// }
-	//
-	// @Override
-	// public void handleMessage(Message msg) {
-	// if (msg != null) {
-	// int flag = msg.what;
-	//
-	// if (progressDialog != null) {
-	// progressDialog.dismiss();// 关闭
-	// }
-	// if (flag == 1) {
-	// if (getResults.equals("failed")) {
-	// } else {// 登陆成功后的代码
-	// // 把用户信息写入application
-	// IApplication.getInstance().setUser(user);
-	// }
-	// }
-	// }
-	// }
+
+	private MyHandler myHandler = new MyHandler(this);
+
+	private static class MyHandler extends Handler {
+
+		private final WeakReference<PushService> mActivity;
+
+		public MyHandler(PushService pushService) {
+			mActivity = new WeakReference<PushService>(pushService);
+		}
+
+		public void handleMessage(Message msg) {
+			if (msg != null) {
+				int flag = msg.what;
+				if (flag == 1) {// 登陆功能
+					if (getResults.equals("failed")) {// 登陆失败
+						Log.d(TAG, "登陆失败");
+					} else {// 登陆成功后的代码
+						// 把用户信息写入application
+						IApplication.getInstance().setUser(user);
+						Log.d(TAG, "登陆成功");
+						// 发送特定action的广播
+						Intent intent = new Intent();
+						intent.setAction("android.intent.action.Ordering.Broadcast");
+						intent.putExtra("loaded", true);
+						mActivity.get().sendBroadcast(intent);
+
+					}
+				} else {// 服务器链接失败等原因
+
+				}
+			}
+		}
+	}
 }
