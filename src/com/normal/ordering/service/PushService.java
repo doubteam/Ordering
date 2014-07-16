@@ -135,6 +135,13 @@ public class PushService extends Service {
 			onLogin(sp.getString(SP_LOGIN_NAME, null),
 					sp.getString(SP_LOGIN_PASSWORD, null));
 		}
+		else{
+			// 发送特定action的广播
+			Intent intent1 = new Intent();
+			intent1.setAction("android.intent.action.Ordering.Broadcast");
+			intent1.putExtra("loaded", true);
+			sendBroadcast(intent1);
+		}
 		return Service.START_STICKY;
 	}
 

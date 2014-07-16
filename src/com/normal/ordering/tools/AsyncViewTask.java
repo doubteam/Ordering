@@ -16,6 +16,7 @@ import android.webkit.URLUtil;
 public class AsyncViewTask extends AsyncTask<View, Void, Drawable> {
 
 	private View mView;
+	int sdk = android.os.Build.VERSION.SDK_INT;
 	private HashMap<String, SoftReference<Drawable>> imageCache;
 
 	public AsyncViewTask() {
@@ -66,13 +67,22 @@ public class AsyncViewTask extends AsyncTask<View, Void, Drawable> {
 	}
 
 	/**
-	 * 更新UI 有点类似Handler
+	 * 更新UI 有点类似Handler setBackground 最低API 16（4.1.2） 
+	 * int sdk =android.os.Build.VERSION.SDK_INT; 
+	 * if(sdk <android.os.Build.VERSION_CODES.JELLY_BEAN)
+	 *  { setBackgroundDrawable(); }
+	 * else { setBackground(); }
 	 */
 	@Override
 	@SuppressLint("NewApi")
 	protected void onPostExecute(Drawable drawable) {
 		if (drawable != null) {
-			this.mView.setBackground(drawable);
+			if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+				this.mView.setBackgroundDrawable(drawable);
+			} else {
+				this.mView.setBackground(drawable);
+			}
+			
 			this.mView = null;
 		}
 	}
