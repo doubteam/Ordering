@@ -21,7 +21,7 @@ import com.normal.ordering.discountfragment.MyListView.OnRefreshListener;
 import com.normal.ordering.entities.DiscountFood;
 import com.normal.ordering.tools.IsConnect;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;

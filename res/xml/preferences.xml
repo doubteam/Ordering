@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="设置" >
+        <PreferenceScreen
+            android:key="smsprompt_preference"
+            android:title="消息提示" >
+            <CheckBoxPreference
+                android:key="smsprompt_prompt_preference"
+                android:title="提示" />
+        </PreferenceScreen>
+
+        <CheckBoxPreference
+            android:key="image_preference"
+            android:title="2G/3G下使用无图模式" />
+
+        <PreferenceScreen
+            android:key="share_preference"
+            android:title="分享" >
+            <SwitchPreference
+                android:key="share_weibo_preference"
+                android:title="微博" />
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="share_preference"
+            android:title="邀请好友使用Ordering" >
+            <SwitchPreference
+                android:key="share_weibo_preference"
+                android:title="微博" />
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="share_preference"
+            android:title="字号大小" >
+            <SwitchPreference
+                android:key="share_weibo_preference"
+                android:title="微博" />
+        </PreferenceScreen>
+
+        <RingtonePreference
+            android:key="share_weibo_preference"
+            android:title="清空缓存" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="其他" >
+        <EditTextPreference
+            android:dialogTitle="意见反馈"
+            android:key="edittext_preference"
+            android:title="意见反馈" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

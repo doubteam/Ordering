@@ -4,14 +4,15 @@ import com.normal.ordering.R;
 import com.normal.ordering.service.PushService;
 import com.normal.ordering.tools.IApplication;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,7 +26,7 @@ import android.widget.ImageView;
  * @author Vaboon
  * @date 2014-6-2
  */
-public class MainActivity extends FragmentActivity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener {
 	private DiscountFragment discountFragment;
 	private OrderFragment orderFragment;
 	private UserFragment userFragment;
@@ -152,8 +153,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// 实例化Fragment页面
 		discountFragment = new DiscountFragment();
 		// 得到Fragment事务管理器
-		FragmentTransaction fragmentTransaction = this
-				.getSupportFragmentManager().beginTransaction();
+		FragmentTransaction fragmentTransaction = this.getFragmentManager()
+				.beginTransaction();
 		// 替换当前的页面
 		fragmentTransaction.replace(R.id.frame_content, discountFragment);
 		// 事务管理提交
@@ -173,8 +174,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// 实例化Fragment页面
 		orderFragment = new OrderFragment();
 		// 得到Fragment事务管理器
-		FragmentTransaction fragmentTransaction = this
-				.getSupportFragmentManager().beginTransaction();
+		FragmentTransaction fragmentTransaction = this.getFragmentManager()
+				.beginTransaction();
 		// 替换当前的页面
 		fragmentTransaction.replace(R.id.frame_content, orderFragment);
 		// 事务管理提交
@@ -198,8 +199,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// 实例化Fragment页面
 		userFragment = new UserFragment();
 		// 得到Fragment事务管理器
-		FragmentTransaction fragmentTransaction = this
-				.getSupportFragmentManager().beginTransaction();
+		FragmentTransaction fragmentTransaction = this.getFragmentManager()
+				.beginTransaction();
 		// 替换当前的页面
 		fragmentTransaction.replace(R.id.frame_content, userFragment);
 		// 事务管理提交
@@ -223,8 +224,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		// 实例化Fragment页面
 		moreFragment = new MoreFragment();
 		// 得到Fragment事务管理器
-		FragmentTransaction fragmentTransaction = this
-				.getSupportFragmentManager().beginTransaction();
+		FragmentTransaction fragmentTransaction = this.getFragmentManager()
+				.beginTransaction();
 		// 替换当前的页面
 		fragmentTransaction.replace(R.id.frame_content, moreFragment);
 		// 事务管理提交
@@ -292,6 +293,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 		return super.onKeyDown(keyCode, event);
 	}
 
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		// this.unbindService(conn);

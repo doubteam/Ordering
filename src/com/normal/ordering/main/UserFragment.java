@@ -6,7 +6,7 @@ import com.normal.ordering.service.PushService;
 import com.normal.ordering.tools.IApplication;
 import com.normal.ordering.userfragment.LoginActivity;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;

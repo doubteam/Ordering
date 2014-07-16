@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_more_list_item_title"
+    style="?android:attr/textAppearanceSmall"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="10dip"
-    android:paddingTop="10dip"
-    android:paddingLeft="15dip" 
-    style="?android:attr/textAppearanceSmall">
+    android:paddingLeft="15dip"
+    android:paddingTop="10dip" >
 
 </TextView>
