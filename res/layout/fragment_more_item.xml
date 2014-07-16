@@ -7,6 +7,6 @@
     android:paddingBottom="10dip"
     android:paddingTop="10dip"
     android:paddingLeft="15dip" 
-    style="?android:attr/textAppearanceLarge">
+    style="?android:attr/textAppearanceSmall">
 
 </TextView>
