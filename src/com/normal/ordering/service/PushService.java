@@ -92,7 +92,11 @@ public class PushService extends Service {
 						try {
 							user = uploadUser(loginName, loginPassword);
 							Thread.sleep(1000);
-							myHandler.sendEmptyMessage(1);
+							if (user != null) {
+								myHandler.sendEmptyMessage(1);
+							} else {
+								myHandler.sendEmptyMessage(2);
+							}
 						} catch (Exception e) {
 							myHandler.sendEmptyMessage(0);
 							e.printStackTrace();
@@ -134,8 +138,7 @@ public class PushService extends Service {
 		if (sp.getBoolean(SP_SUCCESS_LOGIN, false)) {
 			onLogin(sp.getString(SP_LOGIN_NAME, null),
 					sp.getString(SP_LOGIN_PASSWORD, null));
-		}
-		else{
+		} else {
 			// 发送特定action的广播
 			Intent intent1 = new Intent();
 			intent1.setAction("android.intent.action.Ordering.Broadcast");
@@ -236,6 +239,7 @@ public class PushService extends Service {
 			out.flush();
 
 			int responseCode = urlConnection.getResponseCode();
+			Log.d(TAG, "responseCode:" + responseCode);
 			if (responseCode != HttpURLConnection.HTTP_OK) {
 				throw new Exception("服务器出错");
 			}
@@ -256,9 +260,10 @@ public class PushService extends Service {
 			user.setIntegration(userInformation.getString("integration"));
 			user.setUserPassword(userInformation.getString("loginPassword"));
 
-		} catch (Exception e) {
-
+		} catch (java.net.SocketTimeoutException e) {
+			Log.d(TAG, "服务器超时");
 			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} finally {
 			if (in != null) {
@@ -289,11 +294,14 @@ public class PushService extends Service {
 		public void handleMessage(Message msg) {
 			if (msg != null) {
 				int flag = msg.what;
+				Log.d(TAG, "flag:" + flag);
 				if (flag == 1) {// 登陆功能
 					if (getResults.equals("failed")) {// 登陆失败
 						Log.d(TAG, "登陆失败");
-					} else {// 登陆成功后的代码
-						// 把用户信息写入application
+					}
+
+					else {// 登陆成功后的代码
+							// 把用户信息写入application
 						IApplication.getInstance().setUser(user);
 						Log.d(TAG, "登陆成功");
 						// 发送特定action的广播
@@ -304,7 +312,11 @@ public class PushService extends Service {
 
 					}
 				} else {// 服务器链接失败等原因
-
+					// 发送特定action的广播
+					Intent intent = new Intent();
+					intent.setAction("android.intent.action.Ordering.Broadcast");
+					intent.putExtra("loaded", true);
+					mActivity.get().sendBroadcast(intent);
 				}
 			}
 		}
