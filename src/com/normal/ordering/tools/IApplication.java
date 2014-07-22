@@ -7,7 +7,7 @@ import com.normal.ordering.entities.User;
 import android.app.Activity;
 import android.app.Application;
 
-public class IApplication extends Application {
+public class IApplication extends Application{
 
 	private static IApplication iApplication;
 

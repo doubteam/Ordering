@@ -5,6 +5,8 @@ import java.util.List;
 import com.normal.ordering.R;
 import com.normal.ordering.entities.Store;
 import com.normal.ordering.tools.AsyncViewTask;
+
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,18 +24,20 @@ public class OrderFragmentAdapter extends ArrayAdapter<Store> {
 	private List<String> imagePaths = new ArrayList<String>();
 
 	public OrderFragmentAdapter(Context context, int textViewResourceId,
-			List<Store> discountFood, List<String> imagePaths) {
-		super(context, textViewResourceId, discountFood);
+			List<Store> store, List<String> imagePaths) {
+		super(context, textViewResourceId, store);
 		this.mInflater = LayoutInflater.from(context);
 		this.mResourceId = textViewResourceId;
 		this.imagePaths.addAll(imagePaths);
 	}
+	
+
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Store mercchant = this.getItem(position);
-		String merchantName = mercchant.getMerchantName();
-		String merchantAddress = mercchant.getMerchantAddress();
+		String merchantName = mercchant.getStoreName();
+		String merchantAddress = mercchant.getStoreAddress();
 		LinearLayout view = null;
 		if (convertView == null) {
 			view = (LinearLayout) this.mInflater
@@ -60,10 +64,6 @@ public class OrderFragmentAdapter extends ArrayAdapter<Store> {
 		return view;
 	}
 
-	@Override
-	public Store getItem(int position) {
-		return super.getItem(position);
-	}
 	
 
 }

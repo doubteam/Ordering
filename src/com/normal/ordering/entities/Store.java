@@ -11,23 +11,23 @@ public class Store {
 		this.storeAddress = merchantAddress;
 		this.storeName = merchantName;
 	}
-	public String getMerchantAddress() {
+	public String getStoreAddress() {
 		return storeAddress;
 	}
-	public void setMerchantAddress(String merchantAddress) {
-		this.storeAddress = merchantAddress;
+	public void setStoreAddress(String storeAddress) {
+		this.storeAddress = storeAddress;
 	}
-	public String getMerchantName() {
+	public String getStoreName() {
 		return storeName;
 	}
-	public void setMerchantName(String merchantName) {
-		this.storeName = merchantName;
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
 	}
-	public String getMerchantIp() {
+	public String getStoreIp() {
 		return storeIp;
 	}
-	public void setMerchantIp(String merchantIp) {
-		this.storeIp = merchantIp;
+	public void setStoreIp(String storeIp) {
+		this.storeIp = storeIp;
 	}
 	
 	

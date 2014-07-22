@@ -12,16 +12,20 @@
     <TextView 
         android:id="@+id/fragment_order_txt_location"
         android:layout_width="0dp"
-        android:layout_weight="9"
+        android:layout_weight="6"
         style="?android:attr/textAppearanceSmall"
         android:layout_height="30dp"
         />
-    <ImageView
-        android:id="@+id/fragment_order_img_refresh"
+
+    <Button
+        android:id="@+id/fragment_order_btn_refreshlocation"
         android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="20dp" 
+        android:layout_height="30dp"
+        android:layout_weight="1" 
+        android:text="@string/fragment_order_btn_refreshlocation"
+        android:textSize="12sp"
         />
+
     </LinearLayout>
     <com.normal.ordering.discountfragment.MyListView
         android:id="@+id/fragment_order_listview"

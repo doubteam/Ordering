@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+
+    <com.normal.ordering.discountfragment.MyListView
+        android:id="@+id/activity_confiremorder_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        />
+    <Button
+        android:id="@+id/activity_confiremorder_btn_confiremorder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_confiremorder_btn_confiremorder" 
+        />
+</LinearLayout>

@@ -30,5 +30,7 @@
       <string name="fragment_user_logined_text_vipintegral">账户积分：</string>
      <string name="fragment_user_logined_imageview_img">用户头像</string>
      <string name="fragment_user_logined_btn_myordering">我的订单</string>
+     <string name="activity_confiremorder_btn_confiremorder">确认订单</string>
+     <string name="fragment_order_btn_refreshlocation">刷新</string>
 
 </resources>

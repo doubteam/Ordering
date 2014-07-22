@@ -96,7 +96,7 @@ public class DiscountFragment extends Fragment {
 		// 明确进度
 		progressDialog.setIndeterminate(true);
 		if (IsConnect.isConnect(getActivity())) {
-			progressDialog.show();
+		//	progressDialog.show();
 			getDiscountFoodList();
 		}
 		return fragmentView;

@@ -13,17 +13,27 @@ import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.location.LocationClientOption.LocationMode;
 import com.normal.ordering.R;
 import com.normal.ordering.discountfragment.MyListView;
 import com.normal.ordering.discountfragment.MyListView.OnRefreshListener;
 import com.normal.ordering.entities.Store;
 import com.normal.ordering.orderfragment.OrderFragmentAdapter;
 import com.normal.ordering.tools.IsConnect;
+import com.normal.ordering.tools.LocationApplication;
+import com.normal.ordering.tools.LocationApplication.MyLocationListener;
+
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +43,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -43,15 +55,18 @@ import android.widget.Toast;
  */
 public class OrderFragment extends Fragment {
 	
+	private LocationClient mLocationClient;
+	private static final int UPDATA_TIME=10*60*1000;  //每十分钟刷新一次
 	private List<Store> storeList = new ArrayList<Store>();
+	private static String strLocation;
 	private TextView txtLocation;
-	private ImageView imgRefresh;
+	private Button imgRefresh;
 	private MyListView listview;
 	private static String getResult;
 	private static ProgressDialog progressDialog;
 	private List<String> imagePath = new ArrayList<String>();
 	private static String storeActivity;
-	private int merchantCounts;
+	private int storeCounts;
 	private OrderFragmentAdapter adapter;
 
     @Override
@@ -60,11 +75,13 @@ public class OrderFragment extends Fragment {
        /* TextView text = (TextView) fragmentView.findViewById(android.R.id.text1);
         text.setText("Ordering");*/
         
-        txtLocation=(TextView) fragmentView.findViewById(R.id.fragment_order_txt_location);
-        imgRefresh=(ImageView) fragmentView.findViewById(R.id.fragment_order_img_refresh);
-        imgRefresh.setImageResource(R.drawable.refresh_location);
-        txtLocation.setText("当前位置");
+        mLocationClient=((LocationApplication)getActivity().getApplication()).mLocationClient;
+        InitLocation();
+        mLocationClient.start();
         
+        txtLocation=(TextView) fragmentView.findViewById(R.id.fragment_order_txt_location);
+        imgRefresh=(Button) fragmentView.findViewById(R.id.fragment_order_btn_refreshlocation);
+        txtLocation.setText(strLocation);
         /*
          * 刷新当前位置
          */
@@ -72,8 +89,9 @@ public class OrderFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				
-				
+				InitLocation();
+		        mLocationClient.start();
+		        txtLocation.setText(strLocation);
 			}
 		});
         
@@ -93,6 +111,9 @@ public class OrderFragment extends Fragment {
 						"imageItem", "textItem" }, new int[] {
 						R.id.orderActivity_item_img,
 						R.id.orderActivity_item_name });
+		/*adapter=new OrderFragmentAdapter(this.getActivity(), R.layout.fragment_order_listview_content, 
+				storeList, imagePath);*/
+		
 		// 为GridView设置适配器
 		listview.setAdapter(adapter);
 		progressDialog = new ProgressDialog(getActivity());
@@ -114,9 +135,9 @@ public class OrderFragment extends Fragment {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg, int position,
-					long duration) {
-				String item = (String)adapter.getItem(position);
-				Toast.makeText(getActivity(), position, Toast.LENGTH_SHORT).show();
+					long id) {
+				//String item =(String) adapter.getItem(position);
+				Toast.makeText(getActivity(), strLocation, Toast.LENGTH_SHORT).show();
 			}
 		});
 		
@@ -135,6 +156,9 @@ public class OrderFragment extends Fragment {
 					public void run() {
 
 						try {
+							InitLocation();
+					        mLocationClient.start();
+					        txtLocation.setText(strLocation);
 							downloadDiscountFood();
 							Thread.sleep(1000);// 线程睡眠1S
 							if (getResult.equals("success")) {// 获取数据成功再更新
@@ -153,6 +177,7 @@ public class OrderFragment extends Fragment {
 				e.printStackTrace();
 			}
 		} else {
+			txtLocation.setText("无法获取到当前位置");
 			myHandler.sendEmptyMessage(3);
 		}
 	}
@@ -303,7 +328,7 @@ public class OrderFragment extends Fragment {
 	 */
 	private void initList() {
 
-		merchantCounts = imagePath.size();
+		storeCounts = imagePath.size();
 		adapter = new OrderFragmentAdapter(getActivity(),
 				R.layout.fragment_order_listview_content,
 				new ArrayList<Store>(storeList), imagePath);
@@ -335,8 +360,23 @@ public class OrderFragment extends Fragment {
 				.show();
 		return super.onOptionsItemSelected(item);
 	}
-/*
- * 刷新地理位置
- */
+	
+	//获取地理位置
+	private void InitLocation(){
+		LocationClientOption option=new LocationClientOption();
+		option.setLocationMode(LocationMode.Hight_Accuracy);//设置定位模式
+		option.setCoorType("gcj02");
+		option.setScanSpan(UPDATA_TIME);
+		option.setIsNeedAddress(true);
+		mLocationClient.setLocOption(option);
+		Toast.makeText(getActivity(), "hello", Toast.LENGTH_SHORT).show();
+	}
+		
+	@Override
+	public void onStop() {
+		
+		mLocationClient.stop();
+		super.onStop();
+	}
 	
 }
