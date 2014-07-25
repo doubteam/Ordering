@@ -117,4 +117,8 @@
     <dimen name="text_size_h9">12.0sp</dimen>
     <dimen name="viewpager_margin">10.0dip</dimen>
 
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
+
 </resources>

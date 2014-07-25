@@ -6,21 +6,22 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import com.normal.ordering.R;
 import com.normal.ordering.discountfragment.DiscountAdapter;
 import com.normal.ordering.discountfragment.MyListView;
-import com.normal.ordering.discountfragment.MyListView.OnRefreshListener;
+import com.normal.ordering.discountfragment.MyListView.MyListViewListener;
 import com.normal.ordering.entities.DiscountFood;
 import com.normal.ordering.tools.IsConnect;
-
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -44,7 +46,7 @@ import android.widget.Toast;
  * @date 2014-6-2
  */
 
-public class DiscountFragment extends Fragment {
+public class DiscountFragment extends Fragment implements MyListViewListener{
 	private List<DiscountFood> discountFoodList = new ArrayList<DiscountFood>();
 	private static ProgressDialog progressDialog;
 	private static String getResult;
@@ -53,40 +55,51 @@ public class DiscountFragment extends Fragment {
 	private List<String> imagePath = new ArrayList<String>();
 	private static String businessActivity;
 	private int discountCounts;
-	private GridView gridView;
+	//private GridView gridView;
+	private MyListView gridView;
+	private ArrayList<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
+	private static int updateCounts=0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View fragmentView = inflater.inflate(R.layout.fragment_discount,
 				container, false);
-		// TextView text = (TextView) fragmentView
-		// .findViewById(android.R.id.text1);
-		// text.setText("Activity");
 		// 允许使用菜单
 		setHasOptionsMenu(true);
 
 		this.listview = (MyListView) fragmentView
 				.findViewById(R.id.discount_fragment_list_view);
-		this.gridView = (GridView) fragmentView
+	  //this.gridView = (GridView) fragmentView
+	  //		.findViewById(R.id.discount_fragment_grid_view);
+		this.gridView=(MyListView) fragmentView
 				.findViewById(R.id.discount_fragment_grid_view);
 		// 准备要添加的数据条目
-		List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
+		/*List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
 		for (int i = 0; i < 8; i++) {
 			Map<String, Object> item = new HashMap<String, Object>();
 			item.put("imageItem", R.drawable.refresh_image);// 添加图像资源的ID
 			item.put("textItem", "icon" + i);// 按序号添加ItemText
 			items.add(item);
-		}
+		}*/
 
 		// 实例化一个适配器
-		SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), items,
+/*		SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), items,
 				R.layout.fragment_discount_gridview_content, new String[] {
 						"imageItem", "textItem" }, new int[] {
 						R.id.fragment_discount_gridview_img,
-						R.id.fragment_discount_gridview_text });
+						R.id.fragment_discount_gridview_text });*/
 		// 为GridView设置适配器
+		getItem();
+		gridView.setPullLoadEnable(true);
+		SimpleAdapter adapter=new SimpleAdapter(this.getActivity(),items,
+				R.layout.fragment_discount_gridview_content,new String[]{
+			"imageItem","textItem"},new int[]{
+			R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
+		});
 		gridView.setAdapter(adapter);
+		gridView.setXListViewListener(this);
+		
 		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setTitle("请等待");
 		progressDialog.setMessage("数据加载中.......");
@@ -96,7 +109,7 @@ public class DiscountFragment extends Fragment {
 		// 明确进度
 		progressDialog.setIndeterminate(true);
 		if (IsConnect.isConnect(getActivity())) {
-		//	progressDialog.show();
+			progressDialog.show();
 			getDiscountFoodList();
 		}
 		return fragmentView;
@@ -157,26 +170,30 @@ public class DiscountFragment extends Fragment {
 
 				if (flag == 1) {
 					((DiscountFragment) mActivity.get()).initList();// 初始化数据
-					((DiscountFragment) mActivity.get()).listview
-							.onRefreshComplete();// 刷新完成
+					//((DiscountFragment) mActivity.get()).listview
+					//		.onRefreshComplete();// 刷新完成
+					((DiscountFragment) mActivity.get()).onLoad();
 					((DiscountFragment) mActivity.get()).listview
 							.setSelection(0);
 				}
 				if (flag == 2) {
 					Toast.makeText(mActivity.get().getActivity(), "数据获取失败",
 							1000).show();
-					((DiscountFragment) mActivity.get()).listview
-							.onRefreshComplete();// 刷新完成
+					((DiscountFragment) mActivity.get()).onLoad();
+					//((DiscountFragment) mActivity.get()).listview
+					//		.onRefreshComplete();// 刷新完成
 				}
 				if (flag == 0) {
 					Toast.makeText(mActivity.get().getActivity(), "网络超时，请稍后再试",
 							1000).show();
-					((DiscountFragment) mActivity.get()).listview
-							.onRefreshComplete();// 刷新完成
+					((DiscountFragment) mActivity.get()).onLoad();
+					//((DiscountFragment) mActivity.get()).listview
+					//		.onRefreshComplete();// 刷新完成
 				}
 				if (flag == 3) {
-					((DiscountFragment) mActivity.get()).listview
-							.onRefreshComplete();// 刷新完成
+					((DiscountFragment) mActivity.get()).onLoad();
+					//((DiscountFragment) mActivity.get()).listview
+					//		.onRefreshComplete();// 刷新完成
 				}
 			}
 		}
@@ -288,7 +305,9 @@ public class DiscountFragment extends Fragment {
 				new ArrayList<DiscountFood>(discountFoodList), imagePath);
 		listview.setAdapter(adapter);
 		discountFoodList.clear();
-		listview.setOnRefreshListener(new OnRefreshListener()
+		onLoad();
+		getDiscountFoodList();
+		/*listview.setOnRefreshListener(new OnRefreshListener()
 		// 刷新
 		{
 			@Override
@@ -296,7 +315,7 @@ public class DiscountFragment extends Fragment {
 				getDiscountFoodList();
 			}
 
-		});
+		});*/
 	}
 
 	@Override
@@ -314,5 +333,57 @@ public class DiscountFragment extends Fragment {
 		Toast.makeText(getActivity(), "menu text is " + item.getTitle(), 1000)
 				.show();
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onRefresh() {
+		myHandler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				items.clear();
+				getItem();
+				SimpleAdapter adapter=new SimpleAdapter(getActivity(),items,
+						R.layout.fragment_discount_gridview_content,new String[]{
+					"imageItem","textItem"},new int[]{
+					R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
+				});
+				gridView.setAdapter(adapter);
+				onLoad();
+			}
+		}, 1000);
+		
+	}
+
+	@Override
+	public void onLoadMore() {
+		myHandler.postDelayed(new Runnable() {
+					
+			@Override
+			public void run() {
+				getItem();
+				//adapter.notifyDataSetChanged();
+				onLoad();
+				
+			}
+		}, 1000);
+				
+	}
+	private void onLoad() {
+		gridView.stopRefresh();
+		gridView.stopLoadMore();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
+		String date = format.format(new Date());
+		gridView.setRefreshTime(date);
+	}
+	
+	public void getItem(){
+		for (int i = 0; i < 8; i++) {
+			Map<String, Object> item = new HashMap<String, Object>();
+			item.put("imageItem", R.drawable.refresh_image);// 添加图像资源的ID
+			item.put("textItem", "icon" + updateCounts);// 按序号添加ItemText
+			items.add(item);
+			updateCounts++;
+		}
 	}
 }

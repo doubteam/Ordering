@@ -7,6 +7,7 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.GeofenceClient;
 import com.baidu.location.LocationClient;
 import com.normal.ordering.entities.User;
+import com.normal.ordering.main.OrderFragment;
 
 import android.app.Activity;
 import android.app.Application;
@@ -14,6 +15,7 @@ import android.app.Service;
 import android.os.Vibrator;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class IApplication extends Application {
 
@@ -21,7 +23,6 @@ public class IApplication extends Application {
 	public LocationClient mLocationClient;
 	public GeofenceClient mGeofenceClient;
 	public MyLocationListener mMyLocationListener;
-
 	public TextView mLocationResult, logMsg;
 	public TextView trigger, exit;
 	public Vibrator mVibrator;
@@ -37,6 +38,8 @@ public class IApplication extends Application {
 
 		mVibrator = (Vibrator) getApplicationContext().getSystemService(
 				Service.VIBRATOR_SERVICE);
+		//OrderFragment.setStrLocation(sb.toString());
+		//Toast.makeText(IApplication.this, OrderFragment.getStrLocation(), Toast.LENGTH_SHORT).show();
 	}
 
 	public static IApplication getInstance() {
@@ -106,7 +109,6 @@ public class IApplication extends Application {
 		public void onReceiveLocation(BDLocation location) {
 			// Receive Location
 			StringBuffer sb = new StringBuffer(256);
-			sb.append("你当前的位置：");
 			if (location.getLocType() == BDLocation.TypeGpsLocation) {
 				/*
 				 * sb.append("\nspeed : "); sb.append(location.getSpeed());
@@ -117,7 +119,6 @@ public class IApplication extends Application {
 				sb.append(location.getAddrStr());
 				sb.append(location.getDirection());
 			} else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
-				sb.append("\naddr : ");
 				sb.append(location.getAddrStr());
 				// 运营商信息
 				/*
@@ -145,11 +146,5 @@ public class IApplication extends Application {
 		}
 	}
 
-	/**
-	 * 高精度地理围栏回调
-	 * 
-	 * @author jpren
-	 * 
-	 */
 
 }

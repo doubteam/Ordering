@@ -6,7 +6,9 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +22,13 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import com.normal.ordering.R;
 import com.normal.ordering.discountfragment.MyListView;
-import com.normal.ordering.discountfragment.MyListView.OnRefreshListener;
+import com.normal.ordering.discountfragment.MyListView.MyListViewListener;
 import com.normal.ordering.entities.Store;
 import com.normal.ordering.orderfragment.OrderFragmentAdapter;
 import com.normal.ordering.tools.IsConnect;
 import com.normal.ordering.tools.IApplication;
 import com.normal.ordering.tools.IApplication.MyLocationListener;
+import com.normal.ordering.tools.LocationLoading;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -55,12 +58,11 @@ import android.widget.Toast;
  * @author Vaboon
  * @date 2014-6-2
  */
-public class OrderFragment extends Fragment {
+public class OrderFragment extends Fragment implements MyListViewListener{
 
-	private LocationClient mLocationClient;
-	private static final int UPDATA_TIME = 10 * 60 * 1000; // 每十分钟刷新一次
+
+	private LocationLoading locationLoding;
 	private List<Store> storeList = new ArrayList<Store>();
-	private static String strLocation;
 	private TextView txtLocation;
 	private Button imgRefresh;
 	private MyListView listview;
@@ -70,6 +72,9 @@ public class OrderFragment extends Fragment {
 	private static String storeActivity;
 	private int storeCounts;
 	private OrderFragmentAdapter adapter;
+	
+	private ArrayList<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
+	private static int updateCounts1=0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,15 +87,14 @@ public class OrderFragment extends Fragment {
 		 * text.setText("Ordering");
 		 */
 
-		mLocationClient = ((IApplication) getActivity().getApplication()).mLocationClient;
 		InitLocation();
-		mLocationClient.start();
-
 		txtLocation = (TextView) fragmentView
 				.findViewById(R.id.fragment_order_txt_location);
 		imgRefresh = (Button) fragmentView
 				.findViewById(R.id.fragment_order_btn_refreshlocation);
-		txtLocation.setText(strLocation);
+		((IApplication) getActivity().getApplication()).mLocationResult=txtLocation;
+		//停止定位
+		locationLoding.mLocationClient.stop();
 		/*
 		 * 刷新当前位置
 		 */
@@ -99,15 +103,15 @@ public class OrderFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				InitLocation();
-				mLocationClient.start();
-				txtLocation.setText(strLocation);
+				((IApplication) getActivity().getApplication()).mLocationResult=txtLocation;
+				locationLoding.mLocationClient.stop();
 			}
 		});
 
 		listview = (MyListView) fragmentView
 				.findViewById(R.id.fragment_order_listview);
 		// 准备要添加的数据条目
-		List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
+		/*List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
 		for (int i = 0; i < 8; i++) {
 			Map<String, Object> item = new HashMap<String, Object>();
 			item.put("imageItem", R.drawable.refresh_image);// 添加图像资源的ID
@@ -120,14 +124,23 @@ public class OrderFragment extends Fragment {
 				items, R.layout.fragment_order_listview_content, new String[] {
 						"imageItem", "textItem" }, new int[] {
 						R.id.orderActivity_item_img,
-						R.id.orderActivity_item_name });
+						R.id.orderActivity_item_name });*/
 		/*
 		 * adapter=new OrderFragmentAdapter(this.getActivity(),
 		 * R.layout.fragment_order_listview_content, storeList, imagePath);
 		 */
 
+		getItem();
+		listview.setPullLoadEnable(true);
+		SimpleAdapter adapter=new SimpleAdapter(this.getActivity(),items,
+				R.layout.fragment_discount_gridview_content,new String[]{
+			"imageItem","textItem"},new int[]{
+			R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
+		});
 		// 为GridView设置适配器
 		listview.setAdapter(adapter);
+		listview.setXListViewListener(this);
+		
 		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setTitle("请等待");
 		progressDialog.setMessage("数据加载中.......");
@@ -150,8 +163,7 @@ public class OrderFragment extends Fragment {
 			public void onItemClick(AdapterView<?> arg0, View arg,
 					int position, long id) {
 				// String item =(String) adapter.getItem(position);
-				Toast.makeText(getActivity(), strLocation, Toast.LENGTH_SHORT)
-						.show();
+				
 			}
 		});
 
@@ -170,9 +182,6 @@ public class OrderFragment extends Fragment {
 					public void run() {
 
 						try {
-							InitLocation();
-							mLocationClient.start();
-							txtLocation.setText(strLocation);
 							downloadDiscountFood();
 							Thread.sleep(1000);// 线程睡眠1S
 							if (getResult.equals("success")) {// 获取数据成功再更新
@@ -217,25 +226,29 @@ public class OrderFragment extends Fragment {
 
 				if (flag == 1) {
 					((OrderFragment) mActivity.get()).initList();// 初始化数据
-					((OrderFragment) mActivity.get()).listview
-							.onRefreshComplete();// 刷新完成
+					((OrderFragment) mActivity.get()).onLoad();
+				//	((OrderFragment) mActivity.get()).listview
+				//			.onRefreshComplete();// 刷新完成
 					((OrderFragment) mActivity.get()).listview.setSelection(0);
 				}
 				if (flag == 2) {
 					Toast.makeText(mActivity.get().getActivity(), "数据获取失败",
 							1000).show();
-					((OrderFragment) mActivity.get()).listview
-							.onRefreshComplete();// 刷新完成
+					((OrderFragment) mActivity.get()).onLoad();
+				//	((OrderFragment) mActivity.get()).listview
+				//			.onRefreshComplete();// 刷新完成
 				}
 				if (flag == 0) {
 					Toast.makeText(mActivity.get().getActivity(), "网络超时，请稍后再试",
 							1000).show();
-					((OrderFragment) mActivity.get()).listview
-							.onRefreshComplete();// 刷新完成
+					((OrderFragment) mActivity.get()).onLoad();
+				//	((OrderFragment) mActivity.get()).listview
+				//			.onRefreshComplete();// 刷新完成
 				}
 				if (flag == 3) {
-					((OrderFragment) mActivity.get()).listview
-							.onRefreshComplete();// 刷新完成
+					((OrderFragment) mActivity.get()).onLoad();
+				//	((OrderFragment) mActivity.get()).listview
+				//			.onRefreshComplete();// 刷新完成
 				}
 			}
 		}
@@ -347,7 +360,8 @@ public class OrderFragment extends Fragment {
 						storeList), imagePath);
 		listview.setAdapter(adapter);
 		storeList.clear();
-		listview.setOnRefreshListener(new OnRefreshListener()
+		onLoad();
+		/*listview.setOnRefreshListener(new OnRefreshListener()
 		// 刷新
 		{
 			@Override
@@ -355,7 +369,7 @@ public class OrderFragment extends Fragment {
 				getDiscountFoodList();
 			}
 
-		});
+		});*/
 	}
 
 	@Override
@@ -375,20 +389,61 @@ public class OrderFragment extends Fragment {
 
 	// 获取地理位置
 	private void InitLocation() {
-		LocationClientOption option = new LocationClientOption();
-		option.setLocationMode(LocationMode.Hight_Accuracy);// 设置定位模式
-		option.setCoorType("gcj02");
-		option.setScanSpan(UPDATA_TIME);
-		option.setIsNeedAddress(true);
-		mLocationClient.setLocOption(option);
-		Toast.makeText(getActivity(), "hello", Toast.LENGTH_SHORT).show();
+		locationLoding=new LocationLoading();
+		locationLoding.mLocationClient=((IApplication)getActivity().getApplication()).mLocationClient;
+		locationLoding.getLocation();
+		locationLoding.mLocationClient.start();
+	}
+	@Override
+	public void onRefresh() {
+		myHandler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				items.clear();
+				getItem();
+				SimpleAdapter adapter=new SimpleAdapter(getActivity(),items,
+						R.layout.fragment_discount_gridview_content,new String[]{
+					"imageItem","textItem"},new int[]{
+					R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
+				});
+				listview.setAdapter(adapter);
+				onLoad();
+			}
+		}, 1000);
+		
 	}
 
 	@Override
-	public void onStop() {
-
-		mLocationClient.stop();
-		super.onStop();
+	public void onLoadMore() {
+		myHandler.postDelayed(new Runnable() {
+					
+			@Override
+			public void run() {
+				getItem();
+	//			adapter.notifyDataSetChanged();
+				onLoad();
+				
+			}
+		}, 1000);
+				
+	}
+	private void onLoad() {
+		listview.stopRefresh();
+		listview.stopLoadMore();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
+		String date = format.format(new Date());
+		listview.setRefreshTime(date);
+	}
+	
+	public void getItem(){
+		for (int i = 0; i < 8; i++) {
+			Map<String, Object> item = new HashMap<String, Object>();
+			item.put("imageItem", R.drawable.refresh_image);// 添加图像资源的ID
+			item.put("textItem", "icon" + updateCounts1);// 按序号添加ItemText
+			items.add(item);
+			updateCounts1++;
+		}
 	}
 
 }

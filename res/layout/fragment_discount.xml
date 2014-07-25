@@ -4,13 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <GridView
+    <!--  <GridView
         android:id="@+id/discount_fragment_grid_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numColumns="4" 
         >
-    </GridView>
+    </GridView>-->
+    <com.normal.ordering.discountfragment.MyListView
+        android:id="@+id/discount_fragment_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <com.normal.ordering.discountfragment.MyListView
         android:id="@+id/discount_fragment_list_view"
         android:layout_width="match_parent"
