@@ -4,16 +4,56 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-
-    <com.normal.ordering.discountfragment.MyListView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+         android:orientation="horizontal"
+        >
+        <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5" 
+        android:text="@string/activity_confiremorderadapter_text_goodsname"
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/activity_confiremorderadapter_text_goodsnumber"
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2" 
+        android:gravity="center"
+        android:text="@string/activity_confiremorderadapter_text_goodsprice"
+        />
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    >
+    <ListView
         android:id="@+id/activity_confiremorder_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" 
+        android:layout_height="0dp" 
+        android:layout_weight="9"
+        />
+      <TextView
+        android:id="@+id/activity_confiremorder_text_totalprice"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8" 
         />
     <Button
         android:id="@+id/activity_confiremorder_btn_confiremorder"
+        android:layout_height="0dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
         android:text="@string/activity_confiremorder_btn_confiremorder" 
         />
+    </LinearLayout>
 </LinearLayout>

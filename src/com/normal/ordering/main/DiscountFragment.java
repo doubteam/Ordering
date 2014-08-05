@@ -18,12 +18,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import com.normal.ordering.R;
 import com.normal.ordering.discountfragment.DiscountAdapter;
-import com.normal.ordering.discountfragment.MyListView;
-import com.normal.ordering.discountfragment.MyListView.MyListViewListener;
 import com.normal.ordering.entities.DiscountFood;
+import com.normal.ordering.tools.AsyncViewTask;
 import com.normal.ordering.tools.IsConnect;
+import com.normal.ordering.tools.MyListView;
+import com.normal.ordering.tools.MyListView.MyListViewListener;
+
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -59,7 +62,7 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 	private MyListView gridView;
 	private ArrayList<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
 	private static int updateCounts=0;
-
+	private SimpleAdapter adapters;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -98,7 +101,7 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 			R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
 		});
 		gridView.setAdapter(adapter);
-		gridView.setXListViewListener(this);
+		gridView.setMyListViewListener(this);
 		
 		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setTitle("请等待");
@@ -270,7 +273,7 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 								.getString("title");
 						DiscountFood discountFood = new DiscountFood(storeName,
 								discountText);
-						discountFoodList.add(discountFood);
+						discountFoodList.add(discountFood);		
 						imagePath.add(businessList.getJSONObject(i).getString(
 								"image"));
 					}
@@ -343,12 +346,13 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 			public void run() {
 				items.clear();
 				getItem();
-				SimpleAdapter adapter=new SimpleAdapter(getActivity(),items,
+				updateCounts=0;
+				adapters=new SimpleAdapter(getActivity(),items,
 						R.layout.fragment_discount_gridview_content,new String[]{
 					"imageItem","textItem"},new int[]{
 					R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
 				});
-				gridView.setAdapter(adapter);
+				gridView.setAdapter(adapters);
 				onLoad();
 			}
 		}, 1000);
@@ -362,7 +366,7 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 			@Override
 			public void run() {
 				getItem();
-				//adapter.notifyDataSetChanged();
+	//			adapters.notifyDataSetChanged();
 				onLoad();
 				
 			}
@@ -378,7 +382,7 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 	}
 	
 	public void getItem(){
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i <15; i++) {
 			Map<String, Object> item = new HashMap<String, Object>();
 			item.put("imageItem", R.drawable.refresh_image);// 添加图像资源的ID
 			item.put("textItem", "icon" + updateCounts);// 按序号添加ItemText

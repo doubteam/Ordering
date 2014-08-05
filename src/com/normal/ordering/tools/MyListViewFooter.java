@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 
 public class MyListViewFooter extends LinearLayout {
 
@@ -33,11 +32,10 @@ public class MyListViewFooter extends LinearLayout {
 	}
 	
 	public void setState(int state){
-		mHintView.setVisibility(View.INVISIBLE);
+		mHintView.setVisibility(View.INVISIBLE);//初始状态不可见
 		mProgressBar.setVisibility(View.INVISIBLE);
-		mHintView.setVisibility(View.INVISIBLE);
 		if(state==STATE_LOADING){
-			mProgressBar.setVisibility(View.VISIBLE);
+			mProgressBar.setVisibility(View.VISIBLE);//加载的时候可见
 		}
 		else if(state==STATE_READY){
 			mHintView.setVisibility(View.VISIBLE);
@@ -48,6 +46,9 @@ public class MyListViewFooter extends LinearLayout {
 			mHintView.setText(R.string.mylistview_footer_hint_normal);
 		}
 	}
+	/*
+	 * 设置footer的高
+	 */
 	public void setBottomMargin(int height){
 		if(height<0)return;
 		LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)mContentView.getLayoutParams();
@@ -59,9 +60,7 @@ public class MyListViewFooter extends LinearLayout {
 		return lp.bottomMargin;
 	}
 	
-	/*
-	 * normal state
-	 */
+	
 	public void normal() {
 		mHintView.setVisibility(View.VISIBLE);
 		mProgressBar.setVisibility(View.GONE);
@@ -85,13 +84,16 @@ public class MyListViewFooter extends LinearLayout {
 		mContentView.setLayoutParams(lp);
 	}
 	
+	/*
+	 * 初始化
+	 */
 	private void initView(Context context) {
 		mContext = context;
 		RelativeLayout moreView = (RelativeLayout)LayoutInflater.from(mContext).inflate(R.layout.mylistview_footer, null);
 		addView(moreView);
 		moreView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		
-		mContentView = moreView.findViewById(R.id.xlistview_footer_content);
+		mContentView = moreView.findViewById(R.id.mylistview_footer_content);
 		mProgressBar = moreView.findViewById(R.id.mylistview_footer_progressbar);
 		mHintView = (TextView)moreView.findViewById(R.id.mylistview_footer_hint_textview);
 	}

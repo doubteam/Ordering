@@ -59,6 +59,9 @@
             android:label="@string/activity_login_label" >
         </activity>
         <activity
+            android:name="com.normal.ordering.orderfragment.ConfiremOrder" 
+            ></activity>
+        <activity
             android:name="com.normal.ordering.userfragment.RegisterActivity"
             android:label="@string/activity_register_label" >
         </activity>

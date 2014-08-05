@@ -21,17 +21,19 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import com.normal.ordering.R;
-import com.normal.ordering.discountfragment.MyListView;
-import com.normal.ordering.discountfragment.MyListView.MyListViewListener;
 import com.normal.ordering.entities.Store;
+import com.normal.ordering.orderfragment.ConfiremOrder;
 import com.normal.ordering.orderfragment.OrderFragmentAdapter;
 import com.normal.ordering.tools.IsConnect;
 import com.normal.ordering.tools.IApplication;
 import com.normal.ordering.tools.IApplication.MyLocationListener;
 import com.normal.ordering.tools.LocationLoading;
+import com.normal.ordering.tools.MyListView;
+import com.normal.ordering.tools.MyListView.MyListViewListener;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -72,6 +74,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 	private static String storeActivity;
 	private int storeCounts;
 	private OrderFragmentAdapter adapter;
+	private SimpleAdapter adapters;
 	
 	private ArrayList<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
 	private static int updateCounts1=0;
@@ -132,14 +135,14 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 
 		getItem();
 		listview.setPullLoadEnable(true);
-		SimpleAdapter adapter=new SimpleAdapter(this.getActivity(),items,
+		adapters=new SimpleAdapter(this.getActivity(),items,
 				R.layout.fragment_discount_gridview_content,new String[]{
 			"imageItem","textItem"},new int[]{
 			R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
 		});
 		// 为GridView设置适配器
-		listview.setAdapter(adapter);
-		listview.setXListViewListener(this);
+		listview.setAdapter(adapters);
+		listview.setMyListViewListener(this);
 		
 		progressDialog = new ProgressDialog(getActivity());
 		progressDialog.setTitle("请等待");
@@ -163,6 +166,9 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 			public void onItemClick(AdapterView<?> arg0, View arg,
 					int position, long id) {
 				// String item =(String) adapter.getItem(position);
+				Intent intent=new Intent();
+				intent.setClass(getActivity(), ConfiremOrder.class);
+				startActivity(intent);
 				
 			}
 		});
@@ -401,13 +407,14 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 			@Override
 			public void run() {
 				items.clear();
+				updateCounts1=0;
 				getItem();
-				SimpleAdapter adapter=new SimpleAdapter(getActivity(),items,
+				adapters=new SimpleAdapter(getActivity(),items,
 						R.layout.fragment_discount_gridview_content,new String[]{
 					"imageItem","textItem"},new int[]{
 					R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
 				});
-				listview.setAdapter(adapter);
+				listview.setAdapter(adapters);
 				onLoad();
 			}
 		}, 1000);
@@ -421,7 +428,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 			@Override
 			public void run() {
 				getItem();
-	//			adapter.notifyDataSetChanged();
+//				adapters.notifyDataSetChanged();
 				onLoad();
 				
 			}
@@ -437,7 +444,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 	}
 	
 	public void getItem(){
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 15; i++) {
 			Map<String, Object> item = new HashMap<String, Object>();
 			item.put("imageItem", R.drawable.refresh_image);// 添加图像资源的ID
 			item.put("textItem", "icon" + updateCounts1);// 按序号添加ItemText

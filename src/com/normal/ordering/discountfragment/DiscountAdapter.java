@@ -5,12 +5,14 @@ import java.util.List;
 
 import com.normal.ordering.R;
 import com.normal.ordering.entities.DiscountFood;
+import com.normal.ordering.main.MoreFragment;
 import com.normal.ordering.tools.AsyncViewTask;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -32,7 +34,7 @@ public class DiscountAdapter extends ArrayAdapter<DiscountFood> {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		DiscountFood discountFood = this.getItem(position);
 		String storeName = discountFood.getStoreName();
 		String discountText = discountFood.getDiscountText();
@@ -48,14 +50,29 @@ public class DiscountAdapter extends ArrayAdapter<DiscountFood> {
 				.findViewById(R.id.discountActivity_item_discounttext);
 		TextView txtName = (TextView) view
 				.findViewById(R.id.discountActivity_item_name);
-		ImageView image = (ImageView) view
+		final ImageView image = (ImageView) view
 				.findViewById(R.id.discountActivity_item_img);
 
 		txtContent.setText(discountText.toString());
 		txtName.setText(storeName);
 		
+		if(MoreFragment.noImg==false){
 			image.setTag((imagePaths.get(position).equals("")||imagePaths.get(position)==null)?null:imagePaths.get(position));
 			new AsyncViewTask().execute(image);
+		}
+		else{
+			image.setBackgroundResource(R.drawable.action_bar_bg);
+			image.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					image.setTag((imagePaths.get(position).equals("")||imagePaths.get(position)==null)?null:imagePaths.get(position));
+					new AsyncViewTask().execute(image);
+				}
+			});
+			
+		}
 			Log.i("Adapter", imagePaths.get(position)+"当前位置："+position + "   总个数:"
 					+ this.getCount());
 		

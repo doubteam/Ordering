@@ -18,7 +18,6 @@ import android.widget.TextView;
 public class MyListViewHeader extends LinearLayout{
 
 	private RelativeLayout mContainer = null;	
-	//	private LinearLayout mContainer = null;
 	private ImageView mArrowImageView = null;
 	private ProgressBar mProgressBar = null;
 	private TextView mHintTextView = null;
