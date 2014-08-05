@@ -156,7 +156,7 @@ public class DishesList extends Activity {
 		String results = null;
 		try {
 			url = new URL(
-					"http://www.doubteam.com/Ordering/BusinessActivity.action");
+					"http://www.doubteam.com/Ordering/GetBusinessList.action");
 			urlConnection = (HttpURLConnection) url.openConnection();
 			// 请求连接超时
 			urlConnection.setConnectTimeout(10 * 1000);
@@ -177,7 +177,7 @@ public class DishesList extends Activity {
 
 				getResult = result.getString("result");
 				if (getResult.equals("success")) {
-					businessActivity = result.getString("businessactivity");
+					businessActivity = result.getString("businessActivityList");
 					JSONArray businessList = new JSONArray(businessActivity);
 
 					for (int i = 0; i < businessList.length(); i++) {
