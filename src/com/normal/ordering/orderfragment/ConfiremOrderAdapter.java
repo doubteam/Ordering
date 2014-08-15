@@ -2,7 +2,9 @@ package com.normal.ordering.orderfragment;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.normal.ordering.R;
 import com.normal.ordering.entities.TheDishes;
@@ -22,20 +24,29 @@ public class ConfiremOrderAdapter extends ArrayAdapter<TheDishes> {
 
 	private LayoutInflater mInflater;
 	private int mResourceId;
-	public ConfiremOrderAdapter(Context context,int textViewResourceId, List<TheDishes> theOrder) {
+	private ArrayList<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
+	public ConfiremOrderAdapter(Context context,int textViewResourceId, ArrayList<Map<String, Object>> item) {
 		super(context, textViewResourceId);
 		this.mInflater=LayoutInflater.from(context);
 		this.mResourceId=textViewResourceId;
+		items=(ArrayList<Map<String, Object>>) item.clone();
 	}
+	
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public int getCount() {
+		return items.size();
+	}
+
+
+	@Override
+	public View getView(final int position, View convertView, ViewGroup parent) {
 	
-		TheDishes theOrder=this.getItem(position);
-		String goodsName=theOrder.getStoreName();
-		String price=theOrder.getPrice();
-		String number=theOrder.getNumber();
-		
+		Map<String, Object> item;
+		item=items.get(position);
+		String goodsName = item.get("goodsName").toString();
+		String price = item.get("price").toString();
+		String number=item.get("number").toString();
 		LinearLayout view = null;
 		if (convertView == null) {
 			view = (LinearLayout) this.mInflater
@@ -43,6 +54,7 @@ public class ConfiremOrderAdapter extends ArrayAdapter<TheDishes> {
 		} else {
 			view = (LinearLayout) convertView;
 		}
+
 		
 		
 		TextView txtGoodsName=(TextView)view.findViewById(R.id.activity_confiremorderadapter_text_goodsname);
@@ -56,7 +68,7 @@ public class ConfiremOrderAdapter extends ArrayAdapter<TheDishes> {
 		txtPrice.setText(price);
 		
 		
-	/*	editNumber.addTextChangedListener(new TextWatcher() {
+		editNumber.addTextChangedListener(new TextWatcher() {
 			
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -71,11 +83,15 @@ public class ConfiremOrderAdapter extends ArrayAdapter<TheDishes> {
 			
 			@Override
 			public void afterTextChanged(Editable s) {
-			//	theOrder.setNumber(s.toString());
-				
+				items.get(position).put("number", s);
 			}
-		});*/
+		});
 		return view;
+	}
+
+
+	public ArrayList<Map<String, Object>> getItems() {
+		return items;
 	}
 
 	

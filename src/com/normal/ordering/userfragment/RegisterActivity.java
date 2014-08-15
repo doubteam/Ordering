@@ -88,7 +88,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 			params.put("&trueName", username);
 			System.out.println(params);
 			byte[] data = setPostPassParams(params).toString().getBytes();
-			url = new URL("http://www.doubteam.com/Ordering/register.action");
+			url = new URL("http://www.doubteam.com:81/Ordering/register.action");
 			urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection = (HttpURLConnection) url.openConnection();
 			// 请求连接超时

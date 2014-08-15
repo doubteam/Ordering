@@ -7,8 +7,6 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.GeofenceClient;
 import com.baidu.location.LocationClient;
 import com.normal.ordering.entities.User;
-import com.normal.ordering.main.OrderFragment;
-
 import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
@@ -38,8 +36,6 @@ public class IApplication extends Application {
 
 		mVibrator = (Vibrator) getApplicationContext().getSystemService(
 				Service.VIBRATOR_SERVICE);
-		//OrderFragment.setStrLocation(sb.toString());
-		//Toast.makeText(IApplication.this, OrderFragment.getStrLocation(), Toast.LENGTH_SHORT).show();
 	}
 
 	public static IApplication getInstance() {
@@ -110,21 +106,11 @@ public class IApplication extends Application {
 			// Receive Location
 			StringBuffer sb = new StringBuffer(256);
 			if (location.getLocType() == BDLocation.TypeGpsLocation) {
-				/*
-				 * sb.append("\nspeed : "); sb.append(location.getSpeed());
-				 * sb.append("\nsatellite : ");
-				 * sb.append(location.getSatelliteNumber());
-				 * sb.append("\ndirection : "); sb.append("\naddr : ");
-				 */
 				sb.append(location.getAddrStr());
 				sb.append(location.getDirection());
 			} else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
 				sb.append(location.getAddrStr());
 				// 运营商信息
-				/*
-				 * sb.append("\noperationers : ");
-				 * sb.append(location.getOperators());
-				 */
 			}
 			logMsg(sb.toString());
 			Log.i("BaiduLocationApiDem", sb.toString());

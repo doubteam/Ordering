@@ -5,10 +5,13 @@ public class DiscountFood {
 	private String storeName;
 	// 促销文本
 	private String discountText;
+	
+	private String storeId;
 
-	public DiscountFood(String storeName, String discountText) {
+	public DiscountFood(String storeName, String discountText,String storeId) {
 		this.storeName = storeName;
 		this.discountText = discountText;
+		this.storeId=storeId;
 	}
 
 	public String getStoreName() {
@@ -27,4 +30,13 @@ public class DiscountFood {
 		this.discountText = discountText;
 	}
 
+	public String getStoreId() {
+		return storeId;
+	}
+
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
+	}
+
+	
 }

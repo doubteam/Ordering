@@ -45,4 +45,6 @@
     <string name="activity_confiremorderadapter_text_goodsprice">价格</string>
     
     <string name="activity_disheslistadapter_item_btn_order">就它了</string>
+    
+    <string name="activity_disheslist_txt_confirem">确定</string>
 </resources>

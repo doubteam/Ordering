@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="typeface" >
+        <item >大</item>
+        <item >中</item>
+        <item >小</item>
+    </string-array>
+    <string-array name="typeface_value">
+        <item>large</item>
+		<item>middle</item>
+		<item>little</item>
+    </string-array>
+</resources>

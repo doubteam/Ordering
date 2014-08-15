@@ -14,30 +14,22 @@ import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.location.LocationClientOption.LocationMode;
 import com.normal.ordering.R;
 import com.normal.ordering.entities.Store;
-import com.normal.ordering.orderfragment.ConfiremOrder;
+import com.normal.ordering.orderfragment.DishesList;
 import com.normal.ordering.orderfragment.OrderFragmentAdapter;
 import com.normal.ordering.tools.IsConnect;
 import com.normal.ordering.tools.IApplication;
-import com.normal.ordering.tools.IApplication.MyLocationListener;
 import com.normal.ordering.tools.LocationLoading;
 import com.normal.ordering.tools.MyListView;
 import com.normal.ordering.tools.MyListView.MyListViewListener;
-
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,9 +40,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,36 +57,26 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 	private TextView txtLocation;
 	private Button imgRefresh;
 	private MyListView listview;
-	private static String getResult;
-	private static ProgressDialog progressDialog;
+	private String getResult;
+	private static ProgressDialog progressDialogOrder;
 	private List<String> imagePath = new ArrayList<String>();
 	private static String storeActivity;
-	private int storeCounts;
 	private OrderFragmentAdapter adapter;
-	private SimpleAdapter adapters;
-	
-	private ArrayList<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-	private static int updateCounts1=0;
+	private static int orderFragmentUpdateCounts;
+	private ArrayList<Map<String, Object>> storeItems = new ArrayList<Map<String, Object>>();
+	private String province;
+	private String city;
+	private String area;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View fragmentView = inflater.inflate(R.layout.fragment_order,
 				container, false);
-		/*
-		 * TextView text = (TextView)
-		 * fragmentView.findViewById(android.R.id.text1);
-		 * text.setText("Ordering");
-		 */
-
-		InitLocation();
 		txtLocation = (TextView) fragmentView
 				.findViewById(R.id.fragment_order_txt_location);
 		imgRefresh = (Button) fragmentView
 				.findViewById(R.id.fragment_order_btn_refreshlocation);
-		((IApplication) getActivity().getApplication()).mLocationResult=txtLocation;
-		//停止定位
-		locationLoding.mLocationClient.stop();
 		/*
 		 * 刷新当前位置
 		 */
@@ -106,80 +85,85 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 			@Override
 			public void onClick(View v) {
 				InitLocation();
-				((IApplication) getActivity().getApplication()).mLocationResult=txtLocation;
 				locationLoding.mLocationClient.stop();
 			}
 		});
 
 		listview = (MyListView) fragmentView
 				.findViewById(R.id.fragment_order_listview);
-		// 准备要添加的数据条目
-		/*List<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
-		for (int i = 0; i < 8; i++) {
-			Map<String, Object> item = new HashMap<String, Object>();
-			item.put("imageItem", R.drawable.refresh_image);// 添加图像资源的ID
-			item.put("textItem", "icon" + i);// 按序号添加ItemText
-			items.add(item);
-		}
-
-		// 实例化一个适配器
-		final SimpleAdapter adapter = new SimpleAdapter(this.getActivity(),
-				items, R.layout.fragment_order_listview_content, new String[] {
-						"imageItem", "textItem" }, new int[] {
-						R.id.orderActivity_item_img,
-						R.id.orderActivity_item_name });*/
-		/*
-		 * adapter=new OrderFragmentAdapter(this.getActivity(),
-		 * R.layout.fragment_order_listview_content, storeList, imagePath);
-		 */
-
-		getItem();
-		listview.setPullLoadEnable(true);
-		adapters=new SimpleAdapter(this.getActivity(),items,
-				R.layout.fragment_discount_gridview_content,new String[]{
-			"imageItem","textItem"},new int[]{
-			R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
-		});
-		// 为GridView设置适配器
-		listview.setAdapter(adapters);
-		listview.setMyListViewListener(this);
 		
-		progressDialog = new ProgressDialog(getActivity());
-		progressDialog.setTitle("请等待");
-		progressDialog.setMessage("数据加载中.......");
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		
+		progressDialogOrder = new ProgressDialog(getActivity());
+		progressDialogOrder.setTitle("请等待");
+		progressDialogOrder.setMessage("数据加载中.......");
+		progressDialogOrder.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		// 设置ProgressDialgo是否能够被取消
-		progressDialog.setCancelable(false);
+		progressDialogOrder.setCancelable(false);
 		// 明确进度
-		progressDialog.setIndeterminate(true);
+		progressDialogOrder.setIndeterminate(true);
 		if (IsConnect.isConnect(getActivity())) {
-			progressDialog.show();
-			getDiscountFoodList();
+			progressDialogOrder.show();
+			InitLocation();
+			locationLoding.mLocationClient.stop();
+		//	String strLocation=txtLocation.getText().toString();
+			if(txtLocation!=null){
+				/*	String[] sArrays1=strLocation.split("省");
+				province=sArrays1[0].toString();
+				String[] sArrays2=sArrays1[1].toString().split("市");
+				city=sArrays2[0].toString();
+				area=sArrays1[1].toString();*/
+				Toast.makeText(getActivity(), "",
+						Toast.LENGTH_LONG).show();
+				getStoreList();
+			}
+			else{
+				txtLocation.setText("地址获取失败");
+				try{
+					new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							try{
+								myHandler.sendEmptyMessage(2);
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+						}
+					});
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
 		}
 		/*
 		 * 点击事件还有问题
 		 * 当你有内容后，就不会报错了。。。如果需要判断，需要重载方法。。。
 		 */
-		listview.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg,
-					int position, long id) {
-				// String item =(String) adapter.getItem(position);
-				Intent intent=new Intent();
-				intent.setClass(getActivity(), ConfiremOrder.class);
-				startActivity(intent);
-				
-			}
-		});
+		listview.setOnItemClickListener(new btnGetDishes());
 
 		return fragmentView;
+	}
+	
+	
+	public class btnGetDishes implements OnItemClickListener{
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View view, int position,
+				long arg3) {
+			
+			Intent intent=new Intent();
+			long storeId=adapter.getItemId(position);
+			intent.setClass(getActivity(), DishesList.class);
+			intent.putExtra("storeId", storeId+"");
+			startActivity(intent);
+			
+		}	
 	}
 
 	/**
 	 * 拿打折活动表单
 	 */
-	private void getDiscountFoodList() {
+	private void getStoreList() {
 		if (IsConnect.isConnect(getActivity())) {// 判断是否联网
 			try {
 				new Thread(new Runnable() {
@@ -188,7 +172,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 					public void run() {
 
 						try {
-							downloadDiscountFood();
+							downloadStore();
 							Thread.sleep(1000);// 线程睡眠1S
 							if (getResult.equals("success")) {// 获取数据成功再更新
 								myHandler.sendEmptyMessage(1);
@@ -206,7 +190,6 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 				e.printStackTrace();
 			}
 		} else {
-			txtLocation.setText("无法获取到当前位置");
 			myHandler.sendEmptyMessage(3);
 		}
 	}
@@ -226,35 +209,27 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 			if (msg != null) {
 				int flag = msg.what;
 
-				if (progressDialog != null) {
-					progressDialog.dismiss();
+				if (progressDialogOrder != null) {
+					progressDialogOrder.dismiss();
 				}
 
 				if (flag == 1) {
 					((OrderFragment) mActivity.get()).initList();// 初始化数据
 					((OrderFragment) mActivity.get()).onLoad();
-				//	((OrderFragment) mActivity.get()).listview
-				//			.onRefreshComplete();// 刷新完成
 					((OrderFragment) mActivity.get()).listview.setSelection(0);
 				}
 				if (flag == 2) {
 					Toast.makeText(mActivity.get().getActivity(), "数据获取失败",
-							1000).show();
+							Toast.LENGTH_SHORT).show();
 					((OrderFragment) mActivity.get()).onLoad();
-				//	((OrderFragment) mActivity.get()).listview
-				//			.onRefreshComplete();// 刷新完成
 				}
 				if (flag == 0) {
 					Toast.makeText(mActivity.get().getActivity(), "网络超时，请稍后再试",
-							1000).show();
+							Toast.LENGTH_SHORT).show();
 					((OrderFragment) mActivity.get()).onLoad();
-				//	((OrderFragment) mActivity.get()).listview
-				//			.onRefreshComplete();// 刷新完成
 				}
 				if (flag == 3) {
 					((OrderFragment) mActivity.get()).onLoad();
-				//	((OrderFragment) mActivity.get()).listview
-				//			.onRefreshComplete();// 刷新完成
 				}
 			}
 		}
@@ -289,7 +264,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 	 * 
 	 * @throws Exception
 	 */
-	private void downloadDiscountFood() throws Exception {
+	private void downloadStore() throws Exception {
 		URL url = null;
 		HttpURLConnection urlConnection = null;
 		OutputStream out = null;
@@ -298,7 +273,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 		String results = null;
 		try {
 			url = new URL(
-					"http://www.doubteam.com/Ordering/BusinessActivity.action");
+					"http://www.doubteam.com:81/Ordering/GetBusinessActivityList.action");
 			urlConnection = (HttpURLConnection) url.openConnection();
 			// 请求连接超时
 			urlConnection.setConnectTimeout(10 * 1000);
@@ -319,21 +294,20 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 
 				getResult = result.getString("result");
 				if (getResult.equals("success")) {
-					storeActivity = result.getString("businessactivity");
+					storeActivity = result.getString("businessActivityList");
 					JSONArray businessList = new JSONArray(storeActivity);
 
 					for (int i = 0; i < businessList.length(); i++) {
 						// 获取商店名称
-						String merchantName = businessList.getJSONObject(i)
-								.getString("businessName");
+						String storeName = businessList.getJSONObject(i)
+								.getString("storeName");
 						// 获取促销标题
-						String merchantAddress = businessList.getJSONObject(i)
+						String storeAddress = businessList.getJSONObject(i)
 								.getString("title");
-						Store merchant = new Store(merchantName,
-								merchantAddress);
-						storeList.add(merchant);
-						imagePath.add(businessList.getJSONObject(i).getString(
-								"image"));
+						String storeId=businessList.getJSONObject(i).getString("storeId");
+						Store store = new Store(storeName,storeAddress,storeId);
+						storeList.add(store);
+						imagePath.add(businessList.getJSONObject(i).getString("image"));
 					}
 				}
 
@@ -360,35 +334,25 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 	 */
 	private void initList() {
 
-		storeCounts = imagePath.size();
+		orderFragmentUpdateCounts=0;
+		getItem();
+		listview.setPullLoadEnable(true);
 		adapter = new OrderFragmentAdapter(getActivity(),
-				R.layout.fragment_order_listview_content, new ArrayList<Store>(
-						storeList), imagePath);
+				R.layout.fragment_order_listview_content,storeItems);
 		listview.setAdapter(adapter);
-		storeList.clear();
-		onLoad();
-		/*listview.setOnRefreshListener(new OnRefreshListener()
-		// 刷新
-		{
-			@Override
-			public void onRefresh() {
-				getDiscountFoodList();
-			}
+		listview.setMyListViewListener(this);
 
-		});*/
 	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.main, menu);
-		// menu.add("Menu 1a").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		// menu.add("Menu 1b").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Toast.makeText(getActivity(), "menu text is " + item.getTitle(), 1000)
+		Toast.makeText(getActivity(), "menu text is " + item.getTitle(), Toast.LENGTH_SHORT)
 				.show();
 		return super.onOptionsItemSelected(item);
 	}
@@ -399,6 +363,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 		locationLoding.mLocationClient=((IApplication)getActivity().getApplication()).mLocationClient;
 		locationLoding.getLocation();
 		locationLoding.mLocationClient.start();
+		((IApplication) getActivity().getApplication()).mLocationResult=txtLocation;
 	}
 	@Override
 	public void onRefresh() {
@@ -406,15 +371,16 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 			
 			@Override
 			public void run() {
-				items.clear();
-				updateCounts1=0;
+				
+				storeList.clear();
+				storeItems.clear();
+				getStoreList();
+				orderFragmentUpdateCounts=0;
 				getItem();
-				adapters=new SimpleAdapter(getActivity(),items,
-						R.layout.fragment_discount_gridview_content,new String[]{
-					"imageItem","textItem"},new int[]{
-					R.id.fragment_discount_gridview_img,R.id.fragment_discount_gridview_text
-				});
-				listview.setAdapter(adapters);
+				adapter = new OrderFragmentAdapter(getActivity(),
+						R.layout.fragment_order_listview_content,
+						storeItems);
+				listview.setAdapter(adapter);
 				onLoad();
 			}
 		}, 1000);
@@ -428,13 +394,17 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 			@Override
 			public void run() {
 				getItem();
-//				adapters.notifyDataSetChanged();
+				adapter.notifyDataSetChanged();
+				adapter = new OrderFragmentAdapter(getActivity(),
+						R.layout.fragment_order_listview_content,
+						storeItems);
 				onLoad();
 				
 			}
 		}, 1000);
 				
 	}
+	@SuppressLint("SimpleDateFormat")
 	private void onLoad() {
 		listview.stopRefresh();
 		listview.stopLoadMore();
@@ -444,12 +414,19 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 	}
 	
 	public void getItem(){
-		for (int i = 0; i < 15; i++) {
+		int length=storeList.size();
+		for (int i = 0; i <10; i++) {
 			Map<String, Object> item = new HashMap<String, Object>();
-			item.put("imageItem", R.drawable.refresh_image);// 添加图像资源的ID
-			item.put("textItem", "icon" + updateCounts1);// 按序号添加ItemText
-			items.add(item);
-			updateCounts1++;
+			if(orderFragmentUpdateCounts < length){
+				Store strStore=storeList.get(orderFragmentUpdateCounts);
+				String strImg=imagePath.get(orderFragmentUpdateCounts);
+				item.put("storeName", strStore.getStoreName());
+				item.put("storeAddress", strStore.getStoreAddress());
+				item.put("imagePath", strImg);
+				storeItems.add(item);
+				orderFragmentUpdateCounts++;
+			}else{
+			}
 		}
 	}
 

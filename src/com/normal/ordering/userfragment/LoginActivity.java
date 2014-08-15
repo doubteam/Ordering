@@ -115,7 +115,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			params.put("loginName", useremail);
 			params.put("&loginPassword", userpassword);
 			byte[] data = setPostPassParams(params).toString().getBytes();
-			url = new URL("http://www.doubteam.com/Ordering/login.action");
+			url = new URL("http://www.doubteam.com:81/Ordering/login.action");
 			urlConnection = (HttpURLConnection) url.openConnection();
 			// 请求连接超时
 			urlConnection.setConnectTimeout(20 * 1000);

@@ -1,43 +1,64 @@
 package com.normal.ordering.orderfragment;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import com.normal.ordering.R;
-import com.normal.ordering.entities.Store;
+import com.normal.ordering.main.MainActivity;
+import com.normal.ordering.main.MoreFragment;
 import com.normal.ordering.tools.AsyncViewTask;
-
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class OrderFragmentAdapter extends ArrayAdapter<Store> {
+public class OrderFragmentAdapter extends ArrayAdapter<ArrayList<Map<String, Object>>> {
 	
 	private LayoutInflater mInflater;
 	private int mResourceId;
-	private List<String> imagePaths = new ArrayList<String>();
+	private ArrayList<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
 
-	public OrderFragmentAdapter(Context context, int textViewResourceId,
-			List<Store> store, List<String> imagePaths) {
-		super(context, textViewResourceId, store);
+	@SuppressWarnings("unchecked")
+	public OrderFragmentAdapter(Context context, int textViewResourceId,ArrayList<Map<String,Object>> item			) {
+		super(context, textViewResourceId);
 		this.mInflater = LayoutInflater.from(context);
 		this.mResourceId = textViewResourceId;
-		this.imagePaths.addAll(imagePaths);
+		items=(ArrayList<Map<String,Object>>)item.clone();
+
 	}
 	
 
 
 	@Override
+	public int getCount() {
+
+		return items.size();
+	}
+
+
+
+	@Override
+	public long getItemId(int position) {
+
+		Map<String, Object> item;
+		item=items.get(position);
+		return Long.parseLong(item.get("storeId").toString());
+	}
+
+
+
+	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Store mercchant = this.getItem(position);
-		String merchantName = mercchant.getStoreName();
-		String merchantAddress = mercchant.getStoreAddress();
+		Map<String, Object> item;
+		item=items.get(position);
+		String storeName = item.get("storeName").toString();
+		String storeAddress = item.get("storeAddress").toString();
+		final String imagePath=item.get("imagePath").toString();
 		LinearLayout view = null;
 		if (convertView == null) {
 			view = (LinearLayout) this.mInflater
@@ -46,19 +67,34 @@ public class OrderFragmentAdapter extends ArrayAdapter<Store> {
 			view = (LinearLayout) convertView;
 		}
 
-		TextView txtContent = (TextView) view
+		TextView txtStoreAddress = (TextView) view
 				.findViewById(R.id.orderActivity_item_storeaddress);
-		TextView txtName = (TextView) view
+		TextView txtStoreName = (TextView) view
 				.findViewById(R.id.orderActivity_item_name);
-		ImageView image = (ImageView) view
+		final ImageView image = (ImageView) view
 				.findViewById(R.id.orderActivity_item_img);
 
-		txtContent.setText(merchantAddress.toString());
-		txtName.setText(merchantName);
+		txtStoreAddress.setText(storeAddress);
+		txtStoreName.setText(storeName);
 		
-			image.setTag((imagePaths.get(position).equals("")||imagePaths.get(position)==null)?null:imagePaths.get(position));
+		if(MainActivity.noImg==false){
+			image.setTag((imagePath.equals("")||imagePath==null)?null:imagePath);
 			new AsyncViewTask().execute(image);
-			Log.i("Adapter", imagePaths.get(position)+"当前位置："+position + "   总个数:"
+		}
+		else{
+			image.setBackgroundResource(R.drawable.action_bar_bg);
+			image.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					image.setTag((imagePath.equals("")||imagePath==null)?null:imagePath);
+					new AsyncViewTask().execute(image);
+				}
+			});
+			
+		}
+			Log.i("Adapter", imagePath+"当前位置："+position + "   总个数:"
 					+ this.getCount());
 		
 		return view;

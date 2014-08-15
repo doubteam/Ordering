@@ -8,19 +8,19 @@ public class TheDishes{
 	private String price;
 	private String number;
 	
-	public TheDishes(String storeName, String price) {
+	public TheDishes(String goodsName, String price) {
 		super();
-		this.goodsName = storeName;
+		this.goodsName = goodsName;
 		this.price = price;
 	}
 	
-	public TheDishes(String storeName, String price, String number) {
+	public TheDishes(String goodsName, String price, String number) {
 		super();
-		this.goodsName = storeName;
+		this.goodsName = goodsName;
 		this.price = price;
 		this.number = number;
 	}
-	public String getStoreName() {
+	public String getGoodsName() {
 		return goodsName;
 	}
 	public void setGoodsName(String goodsName) {

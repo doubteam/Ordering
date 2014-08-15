@@ -3,18 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
-    <!--  <GridView
-        android:id="@+id/discount_fragment_grid_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="4" 
-        >
-    </GridView>-->
-    <com.normal.ordering.tools.MyListView
-        android:id="@+id/discount_fragment_grid_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
     <com.normal.ordering.tools.MyListView
         android:id="@+id/discount_fragment_list_view"
         android:layout_width="match_parent"

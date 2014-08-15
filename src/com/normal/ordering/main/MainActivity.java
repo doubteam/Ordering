@@ -38,6 +38,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private static final String TAG = "MainActivity";
 	private ProgressDialog progressDialog;
 	private Dialog alertDialog;
+	public static boolean noImg=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		// 实例化图片组件对象
 		userImageView = (ImageView) findViewById(R.id.bottom_tab_user_image_view);
 		moreImageView = (ImageView) findViewById(R.id.bottom_tab_more_image_view);
-
 	}
 
 	/**

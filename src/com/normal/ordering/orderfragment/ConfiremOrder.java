@@ -1,14 +1,22 @@
 package com.normal.ordering.orderfragment;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.List;
-
+import java.util.HashMap;
+import java.util.Map;
+import org.json.JSONObject;
 import com.normal.ordering.R;
-import com.normal.ordering.entities.TheDishes;
-
-
+import com.normal.ordering.tools.IApplication;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,9 +32,10 @@ public class ConfiremOrder extends Activity {
 	private Button btnConfiremOrder;
 	public TextView txtTotalPrice;
 	private ConfiremOrderAdapter adapter;
-	public static String totalPrice;
-	private List<TheDishes> theOrderList=new ArrayList<TheDishes>();
+	private ArrayList<Map<String, Object>> foodList = new ArrayList<Map<String, Object>>();
+	private String userName;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,42 +43,152 @@ public class ConfiremOrder extends Activity {
 		
 		
 		this.listview=(ListView) this.findViewById(R.id.activity_confiremorder_listview);
-		this.txtTotalPrice=(TextView) this.findViewById(R.id.activity_confiremorder_text_totalprice);
-		this.btnConfiremOrder=(Button) this.findViewById(R.id.activity_confiremorder_btn_confiremorder);
-		for (int i = 0; i < 8; i++) {
-			TheDishes theOrder=new TheDishes("Icon"+i, "2", String.valueOf(i+1));
-			theOrderList.add(theOrder);
-		}
-		adapter=new ConfiremOrderAdapter(this, R.layout.activity_confiremorderadapter, theOrderList);
+		Intent intent=getIntent();
+		foodList=(ArrayList<Map<String, Object>>) intent.getSerializableExtra("foodList");
+		storeId=intent.getStringExtra("storeId");
+		adapter=new ConfiremOrderAdapter(this, R.layout.activity_confiremorderadapter, foodList);
 		listview.setAdapter(adapter);
+		this.btnConfiremOrder=(Button) this.findViewById(R.id.activity_confiremorder_btn_confiremorder);
 		btnConfiremOrder.setOnClickListener(new confiremOrder());
-		totalPrice=getTotalPrice();
-		txtTotalPrice.setText(totalPrice);
-		Toast.makeText(this, theOrderList.get(1).getStoreName(), Toast.LENGTH_LONG).show();
+		userName=IApplication.getInstance().getUser().getUserName();
 	}
-	
-	public String getTotalPrice(){
-		int culPrice=0;
-		for(int i=0;i<theOrderList.size();i++){
-			TheDishes getTotalPrice=(TheDishes)theOrderList.get(i);
-			int price=Integer.parseInt(getTotalPrice.getPrice());
-			int number=Integer.parseInt(getTotalPrice.getNumber());
-			culPrice+=price*number;
-		}
-		totalPrice=""+culPrice;
-		return totalPrice;
-	}
-	
-	
-	
 	public class confiremOrder implements OnClickListener{
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void onClick(View v) {
-			
-			
+			if(userName!=null){
+			foodList.clear();
+			foodList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
+//			Toast.makeText(getBaseContext(), foodList+"", Toast.LENGTH_SHORT).show();
+			try {
+				uploadOrder();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			}else{
+				Toast.makeText(getBaseContext(), "你还没有登录", Toast.LENGTH_SHORT).show();
+			}
 		}
 		
 	} 
+	/**
+	 * 
+	 * @param in
+	 * @return json
+	 * @throws Exception
+	 */
+	private static String parseResponseResults(InputStream in) throws Exception {
+		String results = null;
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		byte[] data = new byte[1024];
+		int len = 0;
+		try {
+			while ((len = in.read(data)) != -1) {
+				byteArrayOutputStream.write(data, 0, len);
+			}
+			results = new String(byteArrayOutputStream.toByteArray());
+		} finally {
+			if (byteArrayOutputStream != null) {
+				byteArrayOutputStream.close();
+			}
+		}
+		return results;
+	}
+	/**
+	 * Map<Key, value>
+	 * @param params
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	private static StringBuffer setPostPassParams(Map<String, String> params) throws UnsupportedEncodingException {
+		StringBuffer stringBuffer = new StringBuffer();        //存储封装好的请求体信息
+		        try {
+		            for(Map.Entry<String, String> entry : params.entrySet()) {
+		                 stringBuffer.append(entry.getKey())
+		                             .append("=")
+		                             .append(URLEncoder.encode(entry.getValue(), "UTF-8"))
+		                            .append("&");
+		             }
+		             stringBuffer.deleteCharAt(stringBuffer.length() - 1);    //删除最后的一个"&"
+		         } catch (Exception e) {
+		            e.printStackTrace();
+		         }
+		         return stringBuffer;
+	}
+	private void uploadOrder() throws IOException{
+		URL url = null;
+		HttpURLConnection urlConnection = null;
+		OutputStream out = null;
+		// 对于URLConnection来说，从服务器接手数据是输入流
+		InputStream in = null;
+		String results = null;
+		try {
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("id", storeId);
+			params.put("foodList",foodList.toString());
+			params.put("userName",userName);
+			byte[] data = setPostPassParams(params).toString().getBytes();
+			url = new URL(
+					"http://www.doubteam.com:81/Ordering/GetFoodList.action");
+			urlConnection = (HttpURLConnection) url.openConnection();
+			// 请求连接超时
+			urlConnection.setConnectTimeout(10 * 1000);
+			// 响应超时
+			urlConnection.setReadTimeout(10 * 1000);
+			// 当前连接可以读取数据
+			urlConnection.setDoInput(true);
+			// 当前连接可以写入数据
+			urlConnection.setDoOutput(true);
+			// 请求方式为POST
+			urlConnection.setRequestMethod("POST");
+			// 取消缓存
+			urlConnection.setUseCaches(false);
+			// 常规text/html提交
+			urlConnection.setRequestProperty("Content-Type",
+								"application/x-www-form-urlencoded");
+			
+			urlConnection.setRequestProperty("Content-Length",
+					String.valueOf(data.length));
+			urlConnection.connect();
+			// 在这个连接上获得输出流
+			out = urlConnection.getOutputStream();
+			// 向服务器去传递数据
+			out.write(data);
+			out.flush();
+			int responseCode = urlConnection.getResponseCode();
+			if (responseCode != HttpURLConnection.HTTP_OK) {
+				throw new Exception("服务器出错");
+			} else {
+				in = urlConnection.getInputStream();
+
+				results = parseResponseResults(in);
+
+				/**
+				 * 解析服务器传回来的JSON数据 把它封装到List中
+				 */
+				JSONObject result = new JSONObject(results);
+
+				if (result.getString("result").equals("success")) {
+					Toast.makeText(getBaseContext(), "订餐成功", Toast.LENGTH_SHORT).show();
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+			if (in != null) {
+				in.close();
+			}
+			if (out != null) {
+
+				out.close();
+			}
+			if (urlConnection != null) {
+				urlConnection.disconnect();
+			}
+		}
+	}
 	
 }

@@ -4,12 +4,12 @@ public class Store {
 
 	private String storeAddress;
 	private String storeName;
-	private String storeIp;
-	public Store(String merchantAddress, String merchantName) {
+	private String storeId;
+	public Store(String storeAddress, String storeName,String storeId) {
 		super();
-	//	this.merchantIp=merchantIp;
-		this.storeAddress = merchantAddress;
-		this.storeName = merchantName;
+		this.storeId=storeId;
+		this.storeAddress = storeAddress;
+		this.storeName = storeName;
 	}
 	public String getStoreAddress() {
 		return storeAddress;
@@ -23,11 +23,11 @@ public class Store {
 	public void setStoreName(String storeName) {
 		this.storeName = storeName;
 	}
-	public String getStoreIp() {
-		return storeIp;
+	public String getStoreId() {
+		return storeId;
 	}
-	public void setStoreIp(String storeIp) {
-		this.storeIp = storeIp;
+	public void setStoreIp(String storeId) {
+		this.storeId = storeId;
 	}
 	
 	
