@@ -1,23 +1,13 @@
 package com.normal.ordering.main;
 
+import com.normal.order.userfragment.MyOrder;
 import com.normal.ordering.R;
 import com.normal.ordering.entities.User;
-import com.normal.ordering.service.PushService;
 import com.normal.ordering.tools.IApplication;
 import com.normal.ordering.userfragment.LoginActivity;
-
 import android.app.Fragment;
-import android.app.ProgressDialog;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-
-import android.os.Binder;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * 个人中心--Fragment
@@ -142,8 +131,7 @@ public class UserFragment extends Fragment implements OnClickListener {
 
 	public void clickMyOrderingBtn() {
 		Intent intent = new Intent();
-		intent.setClass(getActivity(), LoginActivity.class);
+		intent.setClass(getActivity(), MyOrder.class);
 		startActivity(intent);
 	}
-
 }

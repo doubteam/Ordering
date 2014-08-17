@@ -46,11 +46,15 @@ public class DishesList extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_disheslist);
 		btnConfirem=(Button)this.findViewById(R.id.activity_disheslist_btn_confirem);
-		btnConfirem.setOnClickListener(new btnConfiremTheOrder());
+		btnConfirem.setVisibility(View.GONE);
 		listview=(ListView) this.findViewById(R.id.activity_disheslist_listview);
 		Intent intent=getIntent();
 		storeId=intent.getStringExtra("storeId").toString();
 		getDishesList();
+		if(dishesList.size()!=0){
+			btnConfirem=(Button)this.findViewById(R.id.activity_disheslist_btn_confirem);
+			btnConfirem.setOnClickListener(new btnConfiremTheOrder());
+		}
 	}
 	public class btnConfiremTheOrder implements OnClickListener{
 
@@ -188,6 +192,12 @@ public class DishesList extends Activity {
 		adapter = new DishesListAdapter(this,
 				R.layout.activity_diseheslistadapter,dishesItems);
 		listview.setAdapter(adapter);
+		if(dishesList.size()!=0){
+			btnConfirem.setVisibility(View.VISIBLE);
+			btnConfirem.setOnClickListener(new btnConfiremTheOrder());
+		}else{
+			Toast.makeText(this, "此商店还没有上架任何美食", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	/**

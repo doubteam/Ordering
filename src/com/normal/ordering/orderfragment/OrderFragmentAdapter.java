@@ -24,7 +24,7 @@ public class OrderFragmentAdapter extends ArrayAdapter<ArrayList<Map<String, Obj
 	private ArrayList<Map<String, Object>> items = new ArrayList<Map<String, Object>>();
 
 	@SuppressWarnings("unchecked")
-	public OrderFragmentAdapter(Context context, int textViewResourceId,ArrayList<Map<String,Object>> item			) {
+	public OrderFragmentAdapter(Context context, int textViewResourceId,ArrayList<Map<String,Object>> item) {
 		super(context, textViewResourceId);
 		this.mInflater = LayoutInflater.from(context);
 		this.mResourceId = textViewResourceId;

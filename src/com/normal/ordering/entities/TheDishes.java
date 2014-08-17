@@ -37,7 +37,5 @@ public class TheDishes{
 	}
 	public void setNumber(String number) {
 		this.number = number;
-	}
-	
-	
+	}	
 }

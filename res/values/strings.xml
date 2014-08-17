@@ -40,11 +40,15 @@
     <string name="mylistview_footer_hint_normal">查看更多</string>
     <string name="mylistview_footer_hint_ready">松开载入更多</string>
     
-    <string name="activity_confiremorderadapter_text_goodsname">菜名</string>
-    <string name="activity_confiremorderadapter_text_goodsnumber">数量</string>
-    <string name="activity_confiremorderadapter_text_goodsprice">价格</string>
+    <string name="activity_confiremorder_text_goodsname">菜名</string>
+    <string name="activity_confiremorder_text_goodsnumber">数量</string>
+    <string name="activity_confiremorder_text_goodsprice">价格</string>
     
     <string name="activity_disheslistadapter_item_btn_order">就它了</string>
     
     <string name="activity_disheslist_txt_confirem">确定</string>
+    
+     <string name="activity_myorder_text_goodsname">菜名</string>
+    <string name="activity_myorder_text_goodsnumber">数量</string>
+    <string name="activity_myorder_text_goodsprice">价格</string>
 </resources>

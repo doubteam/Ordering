@@ -3,11 +3,8 @@ package com.normal.ordering.orderfragment;
 
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-
 import com.normal.ordering.R;
-import com.normal.ordering.entities.TheDishes;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-public class ConfiremOrderAdapter extends ArrayAdapter<TheDishes> {
+public class ConfiremOrderAdapter extends ArrayAdapter<ArrayList<Map<String, Object>>> {
 
 	private LayoutInflater mInflater;
 	private int mResourceId;

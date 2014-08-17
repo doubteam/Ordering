@@ -110,7 +110,6 @@ public class IApplication extends Application {
 				sb.append(location.getDirection());
 			} else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
 				sb.append(location.getAddrStr());
-				// 运营商信息
 			}
 			logMsg(sb.toString());
 			Log.i("BaiduLocationApiDem", sb.toString());

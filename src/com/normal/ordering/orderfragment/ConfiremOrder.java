@@ -14,8 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONObject;
 import com.normal.ordering.R;
+import com.normal.ordering.entities.TheDishes;
+import com.normal.ordering.entities.User;
+import com.normal.ordering.main.MainActivity;
+import com.normal.ordering.main.UserFragment;
 import com.normal.ordering.tools.IApplication;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +40,8 @@ public class ConfiremOrder extends Activity {
 	private ConfiremOrderAdapter adapter;
 	private ArrayList<Map<String, Object>> foodList = new ArrayList<Map<String, Object>>();
 	private String userName;
+	private User user;
+	public static ArrayList<Map<String, Object>> myOrderList = new ArrayList<Map<String, Object>>();
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -50,28 +58,54 @@ public class ConfiremOrder extends Activity {
 		listview.setAdapter(adapter);
 		this.btnConfiremOrder=(Button) this.findViewById(R.id.activity_confiremorder_btn_confiremorder);
 		btnConfiremOrder.setOnClickListener(new confiremOrder());
-		userName=IApplication.getInstance().getUser().getUserName();
+		user=IApplication.getInstance().getUser();
 	}
 	public class confiremOrder implements OnClickListener{
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public void onClick(View v) {
-			if(userName!=null){
-			foodList.clear();
-			foodList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
+			if(IApplication.getInstance().getUser()!=null){
+			user=IApplication.getInstance().getUser();
+			if(myOrderList.size()!=0){
+				myOrderList.clear();
+			}
+			myOrderList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
 //			Toast.makeText(getBaseContext(), foodList+"", Toast.LENGTH_SHORT).show();
-			try {
+			/*try {
 				uploadOrder();
 			} catch (IOException e) {
 				e.printStackTrace();
-			}
+			}*/
 			}else{
-				Toast.makeText(getBaseContext(), "你还没有登录", Toast.LENGTH_SHORT).show();
+				AlertDialog alert=new AlertDialog.Builder(ConfiremOrder.this).create();
+				alert.setTitle("提示");
+				alert.setMessage("你还没有登录");
+				alert.setButton(DialogInterface.BUTTON_NEGATIVE, "登录", listener);
+				alert.setButton(DialogInterface.BUTTON_POSITIVE, "取消", listener);
+				alert.show();
 			}
 		}
 		
 	} 
+	
+	DialogInterface.OnClickListener listener=new DialogInterface.OnClickListener() {
+		
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			switch(which){
+			case DialogInterface.BUTTON_NEGATIVE:
+				Intent intent=new Intent();
+				intent.setClass(ConfiremOrder.this, MainActivity.class);
+				startActivity(intent);
+				break;
+			case DialogInterface.BUTTON_POSITIVE:
+				break;
+			default:
+				break;
+			}
+		}
+	};
 	/**
 	 * 
 	 * @param in
@@ -126,7 +160,7 @@ public class ConfiremOrder extends Activity {
 		try {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("id", storeId);
-			params.put("foodList",foodList.toString());
+			params.put("foodList",myOrderList.toString());
 			params.put("userName",userName);
 			byte[] data = setPostPassParams(params).toString().getBytes();
 			url = new URL(
@@ -190,5 +224,9 @@ public class ConfiremOrder extends Activity {
 			}
 		}
 	}
-	
+	public void getMyOrder(ArrayList<Map<String, Object>> foodList ){
+		for(int i=0;i<foodList.size();i++){
+			TheDishes myOrder;
+		}
+	}
 }
