@@ -1,6 +1,9 @@
 package com.normal.ordering.tools;
 
 
+
+import android.app.Activity;
+
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
@@ -8,7 +11,7 @@ import com.baidu.location.LocationClientOption.LocationMode;
 /*
  * 取得地理位置
  */
-public class LocationLoading {
+public class LocationLoading extends Activity{
 
 	public LocationClient mLocationClient;
 	private static final int UPDATA_TIME=10*60*1000;
@@ -24,5 +27,4 @@ public class LocationLoading {
 		option.setIsNeedAddress(true);
 		mLocationClient.setLocOption(option);
 	}
-
 }

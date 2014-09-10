@@ -35,7 +35,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -84,7 +83,7 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 		
 		return fragmentView;
 	}
-
+	
 	public class btnGetDishes implements OnItemClickListener{
 
 		@Override
@@ -237,7 +236,6 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 				if (getResult.equals("success")) {
 					businessActivity = result.getString("businessActivityList");
 					JSONArray businessList = new JSONArray(businessActivity);
-
 					for (int i = 0; i < businessList.length(); i++) {
 						// 获取商店名称
 						String storeName = businessList.getJSONObject(i)
@@ -307,8 +305,8 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 			
 			@Override
 			public void run() {
-				discountFoodItems.clear();
 				discountFoodList.clear();
+				discountFoodItems.clear();
 				getDiscountFoodList();
 				discountFragmentUpdateCounts=0;
 				getItem();

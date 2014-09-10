@@ -35,7 +35,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -64,15 +63,13 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 	private OrderFragmentAdapter adapter;
 	private static int orderFragmentUpdateCounts;
 	private ArrayList<Map<String, Object>> storeItems = new ArrayList<Map<String, Object>>();
-	private String province;
-	private String city;
-	private String area;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View fragmentView = inflater.inflate(R.layout.fragment_order,
 				container, false);
+		locationLoding=new LocationLoading();
 		txtLocation = (TextView) fragmentView
 				.findViewById(R.id.fragment_order_txt_location);
 		imgRefresh = (Button) fragmentView
@@ -80,18 +77,10 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 		/*
 		 * 刷新当前位置
 		 */
-		imgRefresh.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				InitLocation();
-				locationLoding.mLocationClient.stop();
-			}
-		});
+		imgRefresh.setOnClickListener(new btnRefreshLocation());
 
 		listview = (MyListView) fragmentView
 				.findViewById(R.id.fragment_order_listview);
-		
 		
 		progressDialogOrder = new ProgressDialog(getActivity());
 		progressDialogOrder.setTitle("请等待");
@@ -105,45 +94,23 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 			progressDialogOrder.show();
 			InitLocation();
 			locationLoding.mLocationClient.stop();
-		//	String strLocation=txtLocation.getText().toString();
-			if(txtLocation!=null){
-				/*	String[] sArrays1=strLocation.split("省");
-				province=sArrays1[0].toString();
-				String[] sArrays2=sArrays1[1].toString().split("市");
-				city=sArrays2[0].toString();
-				area=sArrays1[1].toString();*/
-				Toast.makeText(getActivity(), "",
-						Toast.LENGTH_LONG).show();
-				getStoreList();
-			}
-			else{
-				txtLocation.setText("地址获取失败");
-				try{
-					new Thread(new Runnable() {
-						
-						@Override
-						public void run() {
-							try{
-								myHandler.sendEmptyMessage(2);
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-						}
-					});
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-			}
+			getStoreList();
 		}
-		/*
-		 * 点击事件还有问题
-		 * 当你有内容后，就不会报错了。。。如果需要判断，需要重载方法。。。
-		 */
+		
 		listview.setOnItemClickListener(new btnGetDishes());
 
 		return fragmentView;
 	}
 	
+	public class btnRefreshLocation implements View.OnClickListener{
+
+		@Override
+		public void onClick(View v) {
+			InitLocation();
+			locationLoding.mLocationClient.stop();		
+		}
+		
+	}
 	
 	public class btnGetDishes implements OnItemClickListener{
 
@@ -422,6 +389,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 				String strImg=imagePath.get(orderFragmentUpdateCounts);
 				item.put("storeName", strStore.getStoreName());
 				item.put("storeAddress", strStore.getStoreAddress());
+				item.put("storeId", strStore.getStoreId());
 				item.put("imagePath", strImg);
 				storeItems.add(item);
 				orderFragmentUpdateCounts++;

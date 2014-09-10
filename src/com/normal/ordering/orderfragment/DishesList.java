@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import com.normal.ordering.R;
 import com.normal.ordering.entities.TheDishes;
+import com.normal.ordering.tools.IApplication;
 import com.normal.ordering.tools.IsConnect;
 import android.app.Activity;
 import android.content.Intent;
@@ -45,6 +46,7 @@ public class DishesList extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_disheslist);
+		IApplication.getInstance().addActivity(this);
 		btnConfirem=(Button)this.findViewById(R.id.activity_disheslist_btn_confirem);
 		btnConfirem.setVisibility(View.GONE);
 		listview=(ListView) this.findViewById(R.id.activity_disheslist_listview);

@@ -45,6 +45,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
 		setContentView(R.layout.activity_main);
+		IApplication.getInstance().addActivity(this);
 		initView();
 		initData();
 		Bundle bundle = getIntent().getExtras();
@@ -57,7 +58,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					clickBottomTabUserBtn();
 
 				}
-			} else {
+			}else {
 				// 初始化默认为选中点击了“打折”按钮
 				clickBottomTabDiscountBtn();
 			}
@@ -106,7 +107,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						finish();
+						IApplication.getInstance().exitApp();
 					}
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {

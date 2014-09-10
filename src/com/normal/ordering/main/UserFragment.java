@@ -1,6 +1,6 @@
 package com.normal.ordering.main;
 
-import com.normal.order.userfragment.MyOrder;
+import com.normal.ordering.userfragment.MyOrder;
 import com.normal.ordering.R;
 import com.normal.ordering.entities.User;
 import com.normal.ordering.tools.IApplication;

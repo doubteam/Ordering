@@ -1,4 +1,4 @@
-package com.normal.order.userfragment;
+package com.normal.ordering.userfragment;
 
 import java.util.ArrayList;
 import java.util.List;

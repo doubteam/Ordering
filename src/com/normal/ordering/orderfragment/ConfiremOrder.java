@@ -13,11 +13,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.json.JSONObject;
+import com.normal.ordering.userfragment.MyOrder;
 import com.normal.ordering.R;
-import com.normal.ordering.entities.TheDishes;
-import com.normal.ordering.entities.User;
 import com.normal.ordering.main.MainActivity;
-import com.normal.ordering.main.UserFragment;
 import com.normal.ordering.tools.IApplication;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,7 +38,6 @@ public class ConfiremOrder extends Activity {
 	private ConfiremOrderAdapter adapter;
 	private ArrayList<Map<String, Object>> foodList = new ArrayList<Map<String, Object>>();
 	private String userName;
-	private User user;
 	public static ArrayList<Map<String, Object>> myOrderList = new ArrayList<Map<String, Object>>();
 	
 	@SuppressWarnings("unchecked")
@@ -58,7 +55,7 @@ public class ConfiremOrder extends Activity {
 		listview.setAdapter(adapter);
 		this.btnConfiremOrder=(Button) this.findViewById(R.id.activity_confiremorder_btn_confiremorder);
 		btnConfiremOrder.setOnClickListener(new confiremOrder());
-		user=IApplication.getInstance().getUser();
+		IApplication.getInstance().addActivity(this);
 	}
 	public class confiremOrder implements OnClickListener{
 
@@ -66,17 +63,20 @@ public class ConfiremOrder extends Activity {
 		@Override
 		public void onClick(View v) {
 			if(IApplication.getInstance().getUser()!=null){
-			user=IApplication.getInstance().getUser();
-			if(myOrderList.size()!=0){
-				myOrderList.clear();
-			}
-			myOrderList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
-//			Toast.makeText(getBaseContext(), foodList+"", Toast.LENGTH_SHORT).show();
-			/*try {
-				uploadOrder();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}*/
+				if(myOrderList.size()!=0){
+					myOrderList.clear();
+				}
+				myOrderList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
+				Intent intent = new Intent();
+				userName=IApplication.getInstance().getUser().getUserName();
+				intent.setClass(ConfiremOrder.this, MyOrder.class);
+				startActivity(intent);
+	//			Toast.makeText(getBaseContext(), foodList+"", Toast.LENGTH_SHORT).show();
+				/*try {
+					uploadOrder();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}*/
 			}else{
 				AlertDialog alert=new AlertDialog.Builder(ConfiremOrder.this).create();
 				alert.setTitle("提示");
@@ -97,6 +97,7 @@ public class ConfiremOrder extends Activity {
 			case DialogInterface.BUTTON_NEGATIVE:
 				Intent intent=new Intent();
 				intent.setClass(ConfiremOrder.this, MainActivity.class);
+				intent.putExtra("gotoString", "UserFragment");
 				startActivity(intent);
 				break;
 			case DialogInterface.BUTTON_POSITIVE:
@@ -222,11 +223,6 @@ public class ConfiremOrder extends Activity {
 			if (urlConnection != null) {
 				urlConnection.disconnect();
 			}
-		}
-	}
-	public void getMyOrder(ArrayList<Map<String, Object>> foodList ){
-		for(int i=0;i<foodList.size();i++){
-			TheDishes myOrder;
 		}
 	}
 }

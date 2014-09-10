@@ -1,7 +1,11 @@
 package com.normal.ordering.main;
 
 import com.normal.ordering.R;
+
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
@@ -75,10 +79,7 @@ Preference.OnPreferenceChangeListener{
 			
 		}
 		else if(preference.getKey().equals("image_preference")){
-			MainActivity.noImg=image_preference.isChecked();
-			Toast.makeText(getActivity(), MainActivity.noImg+"", Toast.LENGTH_SHORT).show();
-			Log.i("hello", MainActivity.noImg+"");
-			
+			MainActivity.noImg=checkNet();
 		}
 		else if(preference.getKey().equals("share_preference")){}
 		else if(preference.getKey().equals("invite_friends_preference")){}
@@ -114,5 +115,18 @@ Preference.OnPreferenceChangeListener{
 
 		return false;
 	}
-	
+	private boolean checkNet(){
+		boolean flag=image_preference.isChecked();
+		if(flag==false){
+			return false;
+		}else{
+			ConnectivityManager connmag=(ConnectivityManager) getActivity().
+					getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo info=connmag.getActiveNetworkInfo();
+			if(info!=null&&info.getType()==ConnectivityManager.TYPE_WIFI){
+				return true;
+			}
+		}
+		return false;
+	}
 }

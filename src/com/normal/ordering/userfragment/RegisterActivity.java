@@ -14,6 +14,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 import com.normal.ordering.R;
+import com.normal.ordering.tools.IApplication;
 import com.normal.ordering.tools.IsConnect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -162,6 +163,7 @@ public class RegisterActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
+		IApplication.getInstance().addActivity(this);
 		initView();
 		initData();
 

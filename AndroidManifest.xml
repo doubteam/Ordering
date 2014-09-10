@@ -65,7 +65,7 @@
             android:name="com.normal.ordering.orderfragment.DishesList" 
             ></activity>
         <activity
-            android:name="com.normal.order.userfragment.MyOrder" 
+            android:name="com.normal.ordering.userfragment.MyOrder" 
             ></activity>
         <activity
             android:name="com.normal.ordering.userfragment.RegisterActivity"

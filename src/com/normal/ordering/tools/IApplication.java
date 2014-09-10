@@ -13,7 +13,6 @@ import android.app.Service;
 import android.os.Vibrator;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class IApplication extends Application {
 
@@ -84,11 +83,16 @@ public class IApplication extends Application {
 	}
 
 	public void exitApp() {
-		if (activities != null) {
-			for (Activity activity : activities) {
-				activity.finish();
+		try{
+			if (activities != null) {
+				for (Activity activity : activities) {
+					activity.finish();
+				}
+				activities.clear();
 			}
-			activities.clear();
+		}
+		catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 
@@ -124,6 +128,7 @@ public class IApplication extends Application {
 	 */
 	public void logMsg(String str) {
 		try {
+			
 			if (mLocationResult != null)
 				mLocationResult.setText(str);
 		} catch (Exception e) {
