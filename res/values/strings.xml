@@ -30,7 +30,7 @@
       <string name="fragment_user_logined_text_vipintegral">账户积分：</string>
      <string name="fragment_user_logined_imageview_img">用户头像</string>
      <string name="fragment_user_logined_btn_myordering">我的订单</string>
-     <string name="activity_confiremorder_btn_confiremorder">确认订单</string>
+     <string name="activity_confiremorder_btn_confiremorder">现场点餐</string>
      <string name="fragment_order_btn_refreshlocation">刷新</string>
 
      <string name="mylistview_header_hint_normal">下拉刷新</string>
@@ -43,12 +43,17 @@
     <string name="activity_confiremorder_text_goodsname">菜名</string>
     <string name="activity_confiremorder_text_goodsnumber">数量</string>
     <string name="activity_confiremorder_text_goodsprice">价格</string>
+    <string name="activity_confiremorder_btn_booking">提前预定</string>
     
-    <string name="activity_disheslistadapter_item_btn_order">就它了</string>
-    
-    <string name="activity_disheslist_txt_confirem">确定</string>
+    <string name="activity_disheslist_btn_confirem">确定</string>
+    <string name="activity_disheslist_btn_check">查看订单</string>
     
      <string name="activity_myorder_text_goodsname">菜名</string>
     <string name="activity_myorder_text_goodsnumber">数量</string>
     <string name="activity_myorder_text_goodsprice">价格</string>
+    <string name="activity_myorder_btn_ok">完成订单</string>
+    <string name="activity_myorder_txt_myorder">我的订单：</string>
+    
+    <string name="dialogview_txt_more">更多:</string>
+    <string name="dialogview_restnumber">此菜品还剩:</string>
 </resources>

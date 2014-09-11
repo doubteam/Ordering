@@ -35,7 +35,18 @@ public class ConfiremOrderAdapter extends ArrayAdapter<ArrayList<Map<String, Obj
 		return items.size();
 	}
 
+	public Map<String , Object> getItemMap(int position){
+		Map<String, Object> item;
+		item=items.get(position);
+		return item;
+	}
 
+	public String getDishesAmount(int position){
+		Map<String, Object> item;
+		item=items.get(position);
+		String amount=item.get("amount").toString();
+		return amount;
+	}
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 	
@@ -44,6 +55,7 @@ public class ConfiremOrderAdapter extends ArrayAdapter<ArrayList<Map<String, Obj
 		String goodsName = item.get("goodsName").toString();
 		String price = item.get("price").toString();
 		String number=item.get("number").toString();
+		String totalPrice=(Integer.parseInt(price)*Integer.parseInt(number))+"";
 		LinearLayout view = null;
 		if (convertView == null) {
 			view = (LinearLayout) this.mInflater
@@ -55,34 +67,15 @@ public class ConfiremOrderAdapter extends ArrayAdapter<ArrayList<Map<String, Obj
 		
 		
 		TextView txtGoodsName=(TextView)view.findViewById(R.id.activity_confiremorderadapter_text_goodsname);
-		EditText editNumber=(EditText)view.findViewById(R.id.activity_confiremoderadapter_edit_goodsnumber);
+		TextView txtNumber=(TextView)view.findViewById(R.id.activity_confiremoderadapter_txt_goodsnumber);
 		TextView txtPrice=(TextView)view.findViewById(R.id.activity_confiremorderadapter_text_goodsprice);
 		
 		
 		
 		txtGoodsName.setText(goodsName);
-		editNumber.setText(number);
-		txtPrice.setText(price);
+		txtNumber.setText(number);
+		txtPrice.setText(totalPrice);
 		
-		
-		editNumber.addTextChangedListener(new TextWatcher() {
-			
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				
-			}
-			
-			@Override
-			public void afterTextChanged(Editable s) {
-				items.get(position).put("number", s);
-			}
-		});
 		return view;
 	}
 

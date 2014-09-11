@@ -7,12 +7,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/activity_disheslist_listview" 
         ></ListView>
-    <Button
-        android:layout_below="@id/activity_disheslist_listview"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/activity_disheslist_btn_confirem" 
-        android:text="@string/activity_disheslist_txt_confirem"
-        />
-
+        android:layout_below="@id/activity_disheslist_listview"
+        android:orientation="horizontal"
+        >
+	    <Button
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:id="@+id/activity_disheslist_btn_confirem" 
+	        android:text="@string/activity_disheslist_btn_confirem"
+	        android:background="#76C5F0"
+	        />
+    </LinearLayout>
 </RelativeLayout>

@@ -7,18 +7,21 @@ public class TheDishes{
 	private String goodsName;
 	private String price;
 	private String number;
+	private String disheId;
 	
-	public TheDishes(String goodsName, String price) {
+	public TheDishes(String goodsName, String price,String dishesId) {
 		super();
 		this.goodsName = goodsName;
 		this.price = price;
+		this.disheId=dishesId;
 	}
 	
-	public TheDishes(String goodsName, String price, String number) {
+	public TheDishes(String goodsName, String price, String number,String dishesId) {
 		super();
 		this.goodsName = goodsName;
 		this.price = price;
 		this.number = number;
+		this.disheId=dishesId;
 	}
 	public String getGoodsName() {
 		return goodsName;
@@ -37,5 +40,14 @@ public class TheDishes{
 	}
 	public void setNumber(String number) {
 		this.number = number;
+	}
+
+	public String getDisheId() {
+		return disheId;
+	}
+
+	public void setDisheId(String disheId) {
+		this.disheId = disheId;
 	}	
+	
 }

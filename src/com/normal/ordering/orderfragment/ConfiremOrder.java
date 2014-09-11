@@ -22,9 +22,13 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +38,7 @@ public class ConfiremOrder extends Activity {
 	private String storeId;//商家Id
 	private ListView listview;
 	private Button btnConfiremOrder;
+	private Button btnBooking;
 	public TextView txtTotalPrice;
 	private ConfiremOrderAdapter adapter;
 	private ArrayList<Map<String, Object>> foodList = new ArrayList<Map<String, Object>>();
@@ -53,10 +58,91 @@ public class ConfiremOrder extends Activity {
 		storeId=intent.getStringExtra("storeId");
 		adapter=new ConfiremOrderAdapter(this, R.layout.activity_confiremorderadapter, foodList);
 		listview.setAdapter(adapter);
+		this.btnBooking=(Button) this.findViewById(R.id.activity_confiremorder_btn_booking);
 		this.btnConfiremOrder=(Button) this.findViewById(R.id.activity_confiremorder_btn_confiremorder);
 		btnConfiremOrder.setOnClickListener(new confiremOrder());
+		
+		listview.setOnItemClickListener(new listviewClickListener());
 		IApplication.getInstance().addActivity(this);
 	}
+	
+	public class listviewClickListener implements OnItemClickListener{
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View view, final int position,
+				long arg3) {
+			LayoutInflater inflater = (LayoutInflater)ConfiremOrder
+					.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+			final View layoutmore=inflater.inflate(R.layout.dialogview_more,null);
+			String amount=adapter.getDishesAmount(position);
+			TextView restnumber=(TextView) layoutmore.findViewById(R.id.dialogview_restnumber);
+			restnumber.setText(amount+"份");
+			String []itemList=new String[]{"删除美食","1份","2份","3份"};			
+			AlertDialog alert=new AlertDialog.Builder(ConfiremOrder.this)
+					.setTitle("修改美食")
+					.setItems(itemList, new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							switch(which){
+							case 0:
+								Map<String,Object> itemMap=adapter.getItemMap(position);
+								foodList.remove(itemMap);
+								if(foodList.size()==0){
+									Intent intent=new Intent();
+									intent.setClass(ConfiremOrder.this, DishesList.class);
+									intent.putExtra("storeId", storeId);
+									startActivity(intent);
+								}else{
+									adapter=new ConfiremOrderAdapter
+											(ConfiremOrder.this, R.layout.activity_confiremorderadapter, foodList);
+									listview.setAdapter(adapter);
+								}
+								break;
+							case 1:
+								Map<String,Object> map0=adapter.getItemMap(position);
+								map0.put("number", 1);
+								foodList.set(position, map0);
+								adapter.notifyDataSetChanged();
+								break;
+							case 2:
+								Map<String,Object> map1=adapter.getItemMap(position);
+								map1.put("number", 2);
+								foodList.set(position, map1);
+								adapter.notifyDataSetChanged();
+								break;
+							case 3:
+								Map<String,Object> map2=adapter.getItemMap(position);
+								map2.put("number", 3);
+								foodList.set(position, map2);
+								adapter.notifyDataSetChanged();
+								break;
+							}
+						}
+						
+					})
+					.setView(layoutmore)
+					.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							EditText editNumber=(EditText) layoutmore.findViewById(R.id.dialogview_txt_more);
+							String moreNumber=editNumber.getText().toString();
+							if(moreNumber.length()>0){
+								Map<String,Object> map=adapter.getItemMap(position);
+								map.put("number", moreNumber);
+								foodList.set(position, map);
+								adapter.notifyDataSetChanged();
+							}
+						}
+					})
+					.setPositiveButton("取消", listener)
+					.create();
+			alert.show();
+		}
+		
+	}
+	
 	public class confiremOrder implements OnClickListener{
 
 		@SuppressWarnings("unchecked")

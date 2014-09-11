@@ -275,6 +275,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 						Store store = new Store(storeName,storeAddress,storeId);
 						storeList.add(store);
 						imagePath.add(businessList.getJSONObject(i).getString("image"));
+						//Toast.makeText(getActivity(), storeList+"", Toast.LENGTH_LONG).show();
 					}
 				}
 
@@ -365,6 +366,7 @@ public class OrderFragment extends Fragment implements MyListViewListener{
 				adapter = new OrderFragmentAdapter(getActivity(),
 						R.layout.fragment_order_listview_content,
 						storeItems);
+				listview.setAdapter(adapter);
 				onLoad();
 				
 			}

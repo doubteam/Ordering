@@ -328,6 +328,7 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 			public void run() {
 				getItem();
 				adapter.notifyDataSetChanged();
+		
 				adapter = new DiscountAdapter(getActivity(),
 						R.layout.fragment_discount_listview_content,
 						discountFoodItems);
@@ -345,7 +346,6 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 		String date = format.format(new Date());
 		listview.setRefreshTime(date);
 	}
-	
 	public void getItem(){
 		int length=discountFoodList.size();
 		for (int i = 0; i <10; i++) {

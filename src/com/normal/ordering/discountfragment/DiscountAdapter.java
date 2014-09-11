@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import com.normal.ordering.R;
 import com.normal.ordering.main.MainActivity;
-import com.normal.ordering.main.MoreFragment;
 import com.normal.ordering.tools.AsyncViewTask;
 import android.content.Context;
 import android.util.Log;
@@ -16,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class DiscountAdapter extends ArrayAdapter<ArrayList<Map<String, Object>>> {
 

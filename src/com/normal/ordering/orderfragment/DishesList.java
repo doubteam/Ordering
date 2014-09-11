@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import com.normal.ordering.R;
 import com.normal.ordering.entities.TheDishes;
+import com.normal.ordering.main.MainActivity;
 import com.normal.ordering.tools.IApplication;
 import com.normal.ordering.tools.IsConnect;
 import android.app.Activity;
@@ -23,6 +24,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -54,7 +56,7 @@ public class DishesList extends Activity {
 		storeId=intent.getStringExtra("storeId").toString();
 		getDishesList();
 		if(dishesList.size()!=0){
-			btnConfirem=(Button)this.findViewById(R.id.activity_disheslist_btn_confirem);
+			Toast.makeText(this, dishesList+"", Toast.LENGTH_LONG).show();
 			btnConfirem.setOnClickListener(new btnConfiremTheOrder());
 		}
 	}
@@ -268,12 +270,14 @@ public class DishesList extends Activity {
 								.getString("dishes");
 						String price = foodList.getJSONObject(i)
 								.getString("price");
+						String dishesId=foodList.getJSONObject(i)
+								.getString("id");
+						String amount=foodList.getJSONObject(i)
+								.getString("amount");
 						String imgPath=foodList.getJSONObject(i).getString("picture");
-						TheDishes theDishes = new TheDishes(goodsName,
-								price);
+						TheDishes theDishes = new TheDishes(goodsName,price,amount,dishesId);
 						imagePath.add(imgPath);
-						dishesList.add(theDishes);		
-						Toast.makeText(this, dishesList+"  "+imgPath, Toast.LENGTH_SHORT).show();
+						dishesList.add(theDishes);	
 					}
 				}
 
@@ -296,14 +300,27 @@ public class DishesList extends Activity {
 	}
 	public void getItem(){
 		int length=dishesList.size();
-		Map<String, Object> item = new HashMap<String, Object>();
-			for(int i=0;i<length;i++){
-				TheDishes strDishes=dishesList.get(i);
-				String strImg=imagePath.get(i);
-				item.put("goodsName", strDishes.getGoodsName());
-				item.put("price", strDishes.getPrice());
-				item.put("imagePath", strImg);
-				dishesItems.add(item);
-			}
+		for(int i=0;i<length;i++){
+			Map<String, Object> item = new HashMap<String, Object>();
+			TheDishes strDishes=dishesList.get(i);
+			String strImg=imagePath.get(i);
+			item.put("goodsName", strDishes.getGoodsName());
+			item.put("price", strDishes.getPrice());
+			item.put("imagePath", strImg);
+			item.put("amount", strDishes.getNumber());
+			item.put("disheId", strDishes.getDisheId());
+			dishesItems.add(item);
+		}
 	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent();
+			intent.setClass(this, MainActivity.class);
+			startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 }
