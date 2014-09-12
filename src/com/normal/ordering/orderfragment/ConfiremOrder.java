@@ -1,5 +1,10 @@
 package com.normal.ordering.orderfragment;
-
+/*
+ * 需要传的值有UserName
+ * myBookingTime  预定的时间  本身是ArrayList转换成String传
+ * myOrderList    订餐的内容同上
+ * 具体要怎么写随便你
+ */
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -59,6 +64,7 @@ public class ConfiremOrder extends Activity {
 		storeId=intent.getStringExtra("storeId");
 		adapter=new ConfiremOrderAdapter(this, R.layout.activity_confiremorderadapter, foodList);
 		listview.setAdapter(adapter);
+		userName=IApplication.getInstance().getUser().getUserName();
 		this.btnBooking=(Button) this.findViewById(R.id.activity_confiremorder_btn_booking);
 		this.btnConfiremOrder=(Button) this.findViewById(R.id.activity_confiremorder_btn_confiremorder);
 		btnConfiremOrder.setOnClickListener(new confiremOrder());
@@ -110,10 +116,8 @@ public class ConfiremOrder extends Activity {
 												String str=sb.toString();
 												Map<String,Object> time=new HashMap<String, Object>();
 												time.put("time", str);
-												myBookingTime.add(time);
-												foodList.clear();
-												foodList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
-												myOrderList.addAll(foodList);
+												myBookingTime.add(time);					
+												myOrderList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
 												Intent intent = new Intent();
 												userName=IApplication.getInstance().getUser().getUserName();
 												intent.setClass(ConfiremOrder.this, MyOrder.class);
@@ -226,9 +230,7 @@ public class ConfiremOrder extends Activity {
 				Map<String,Object> time=new HashMap<String, Object>();
 				time.put("time", "已在餐厅");
 				myBookingTime.add(time);
-				foodList.clear();
-				foodList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
-				myOrderList.addAll(foodList);
+				myOrderList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
 				Intent intent = new Intent();
 				userName=IApplication.getInstance().getUser().getUserName();
 				intent.setClass(ConfiremOrder.this, MyOrder.class);
@@ -325,6 +327,7 @@ public class ConfiremOrder extends Activity {
 			params.put("id", storeId);
 			params.put("foodList",myOrderList.toString());
 			params.put("userName",userName);
+			params.put("time", myBookingTime.toString());
 			byte[] data = setPostPassParams(params).toString().getBytes();
 			url = new URL(
 					"http://www.doubteam.com:81/Ordering/GetFoodList.action");
