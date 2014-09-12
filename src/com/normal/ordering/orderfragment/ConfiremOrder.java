@@ -17,9 +17,14 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import com.normal.ordering.userfragment.MyOrder;
 import com.normal.ordering.R;
+import com.normal.ordering.entities.Food;
+import com.normal.ordering.entities.JsonBean;
 import com.normal.ordering.main.MainActivity;
 import com.normal.ordering.tools.IApplication;
 import android.app.Activity;
@@ -48,6 +53,7 @@ public class ConfiremOrder extends Activity {
 	private ConfiremOrderAdapter adapter;
 	private ArrayList<Map<String, Object>> foodList = new ArrayList<Map<String, Object>>();
 	private String userName;
+	private String isBooking;
 	public static ArrayList<Map<String, Object>> myOrderList = new ArrayList<Map<String, Object>>();
 	public static ArrayList<Map<String, Object>> myBookingTime = new ArrayList<Map<String, Object>>();
 	
@@ -64,7 +70,6 @@ public class ConfiremOrder extends Activity {
 		storeId=intent.getStringExtra("storeId");
 		adapter=new ConfiremOrderAdapter(this, R.layout.activity_confiremorderadapter, foodList);
 		listview.setAdapter(adapter);
-		userName=IApplication.getInstance().getUser().getUserName();
 		this.btnBooking=(Button) this.findViewById(R.id.activity_confiremorder_btn_booking);
 		this.btnConfiremOrder=(Button) this.findViewById(R.id.activity_confiremorder_btn_confiremorder);
 		btnConfiremOrder.setOnClickListener(new confiremOrder());
@@ -118,6 +123,8 @@ public class ConfiremOrder extends Activity {
 												time.put("time", str);
 												myBookingTime.add(time);					
 												myOrderList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
+												isBooking="1";
+												changeOrderlist();
 												Intent intent = new Intent();
 												userName=IApplication.getInstance().getUser().getUserName();
 												intent.setClass(ConfiremOrder.this, MyOrder.class);
@@ -156,6 +163,7 @@ public class ConfiremOrder extends Activity {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
+							int totalPrice;
 							switch(which){
 							case 0:
 								Map<String,Object> itemMap=adapter.getItemMap(position);
@@ -174,18 +182,27 @@ public class ConfiremOrder extends Activity {
 							case 1:
 								Map<String,Object> map0=adapter.getItemMap(position);
 								map0.put("number", 1);
+								totalPrice=Integer.parseInt(map0.get("singlePrice").toString())*
+										Integer.parseInt(map0.get("number").toString());
+								map0.put("totalPrice", totalPrice);
 								foodList.set(position, map0);
 								adapter.notifyDataSetChanged();
 								break;
 							case 2:
 								Map<String,Object> map1=adapter.getItemMap(position);
 								map1.put("number", 2);
+								totalPrice=Integer.parseInt(map1.get("singlePrice").toString())*
+										Integer.parseInt(map1.get("number").toString());
+								map1.put("totalPrice", totalPrice);
 								foodList.set(position, map1);
 								adapter.notifyDataSetChanged();
 								break;
 							case 3:
 								Map<String,Object> map2=adapter.getItemMap(position);
 								map2.put("number", 3);
+								totalPrice=Integer.parseInt(map2.get("singlePrice").toString())*
+										Integer.parseInt(map2.get("number").toString());
+								map2.put("totalPrice", totalPrice);
 								foodList.set(position, map2);
 								adapter.notifyDataSetChanged();
 								break;
@@ -202,7 +219,10 @@ public class ConfiremOrder extends Activity {
 							String moreNumber=editNumber.getText().toString();
 							if(moreNumber.length()>0){
 								Map<String,Object> map=adapter.getItemMap(position);
-								map.put("number", moreNumber);
+								map.put("number", moreNumber);			
+								int totalPrice=Integer.parseInt(map.get("singlePrice").toString())*
+										Integer.parseInt(map.get("number").toString());
+								map.put("totalPrice", totalPrice);
 								foodList.set(position, map);
 								adapter.notifyDataSetChanged();
 							}
@@ -231,8 +251,10 @@ public class ConfiremOrder extends Activity {
 				time.put("time", "已在餐厅");
 				myBookingTime.add(time);
 				myOrderList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
-				Intent intent = new Intent();
+				isBooking="0";
+				changeOrderlist();
 				userName=IApplication.getInstance().getUser().getUserName();
+				Intent intent = new Intent();;
 				intent.setClass(ConfiremOrder.this, MyOrder.class);
 				startActivity(intent);
 	//			Toast.makeText(getBaseContext(), foodList+"", Toast.LENGTH_SHORT).show();
@@ -315,7 +337,7 @@ public class ConfiremOrder extends Activity {
 		         }
 		         return stringBuffer;
 	}
-	private void uploadOrder() throws IOException{
+	private void uploadOrder(JSONObject jsonObject) throws IOException{
 		URL url = null;
 		HttpURLConnection urlConnection = null;
 		OutputStream out = null;
@@ -324,10 +346,7 @@ public class ConfiremOrder extends Activity {
 		String results = null;
 		try {
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("id", storeId);
-			params.put("foodList",myOrderList.toString());
-			params.put("userName",userName);
-			params.put("time", myBookingTime.toString());
+			params.put("order", jsonObject.toString());
 			byte[] data = setPostPassParams(params).toString().getBytes();
 			url = new URL(
 					"http://www.doubteam.com:81/Ordering/GetFoodList.action");
@@ -389,5 +408,32 @@ public class ConfiremOrder extends Activity {
 				urlConnection.disconnect();
 			}
 		}
+	}
+	private void changeOrderlist(){
+		JsonBean jsonBean=new JsonBean();
+		ArrayList<Food> foodList=new ArrayList<Food>();
+		for(int i=0;i<myOrderList.size();i++){
+			Food myFood=new Food();
+			String foodName;
+			String foodNumber;
+			String foodPrice;
+			foodName=myOrderList.get(i).get("goodsName").toString();
+			myFood.setFoodName(foodName);
+			foodNumber=myOrderList.get(i).get("number").toString();
+			myFood.setFoodNumber(foodNumber);
+			foodPrice=myOrderList.get(i).get("totalPrice").toString();
+			myFood.setFoodPrice(foodPrice);
+			foodList.add(myFood);
+		}
+		jsonBean.setMyOrderingList(foodList);
+		try {
+			JSONObject jsonObject=new JSONObject(jsonBean.toString());
+			System.out.println(jsonObject);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

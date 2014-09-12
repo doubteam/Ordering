@@ -97,9 +97,10 @@ public class DishesListAdapter extends ArrayAdapter<TheDishes>{
 					btnOrder.setBackgroundColor(Color.GRAY);
 					Map<String,Object> getDishesList=new HashMap<String, Object>();
 					getDishesList.put("goodsName", goodsName);
-					getDishesList.put("price", price);
+					getDishesList.put("singlePrice", price);
 					getDishesList.put("number", 1);
 					getDishesList.put("amount", amount);
+					getDishesList.put("totalPrice", Integer.parseInt(price)*1);
 					if(dishesList.size()==0){
 						dishesList.add(getDishesList);
 					}else{

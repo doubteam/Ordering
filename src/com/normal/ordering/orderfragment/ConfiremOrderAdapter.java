@@ -53,7 +53,7 @@ public class ConfiremOrderAdapter extends ArrayAdapter<ArrayList<Map<String, Obj
 		Map<String, Object> item;
 		item=items.get(position);
 		String goodsName = item.get("goodsName").toString();
-		String price = item.get("price").toString();
+		String price = item.get("singlePrice").toString();
 		String number=item.get("number").toString();
 		String totalPrice=(Integer.parseInt(price)*Integer.parseInt(number))+"";
 		LinearLayout view = null;

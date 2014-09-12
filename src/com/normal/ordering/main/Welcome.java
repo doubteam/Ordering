@@ -55,6 +55,8 @@ public class Welcome extends Activity {
 
 	private void initView() {
 		textView = (TextView) findViewById(R.id.welcome_app_name);
+		textView.setVisibility(8);
+		
 	}
 
 	private void initData() {
@@ -81,6 +83,7 @@ public class Welcome extends Activity {
 			boolean loaded = bundle.getBoolean("loaded");
 			if (loaded) {// 加载完
 				intent.setClass(getApplicationContext(), MainActivity.class);
+				
 				startActivity(intent);
 				finish();//防止返回到这页
 			}

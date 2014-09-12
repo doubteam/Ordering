@@ -140,6 +140,12 @@ public class PushService extends Service {
 					sp.getString(SP_LOGIN_PASSWORD, null));
 		} else {
 			// 发送特定action的广播
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Intent intent1 = new Intent();
 			intent1.setAction("android.intent.action.Ordering.Broadcast");
 			intent1.putExtra("loaded", true);

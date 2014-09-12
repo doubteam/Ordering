@@ -40,7 +40,7 @@ public class MyOrderAdapter extends ArrayAdapter<ArrayList<Map<String, Object>>>
 		Map<String, Object> item;
 		item=items.get(position);
 		String goodsName = item.get("goodsName").toString();
-		String price = item.get("price").toString();
+		String price = item.get("totalPrice").toString();
 		String number=item.get("number").toString();
 		LinearLayout view = null;
 		if (convertView == null) {
