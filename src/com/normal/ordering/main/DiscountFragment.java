@@ -346,6 +346,7 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 		String date = format.format(new Date());
 		listview.setRefreshTime(date);
 	}
+	Map<String, Object> item = new HashMap<String, Object>();
 	public void getItem(){
 		int length=discountFoodList.size();
 		for (int i = 0; i <10; i++) {
@@ -363,4 +364,5 @@ public class DiscountFragment extends Fragment implements MyListViewListener{
 			}
 		}
 	}
+	
 }

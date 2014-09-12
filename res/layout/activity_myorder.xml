@@ -9,6 +9,11 @@
         android:layout_height="wrap_content"
         android:text="@string/activity_myorder_txt_myorder" 
         />
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/activity_myorder_txt_time"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

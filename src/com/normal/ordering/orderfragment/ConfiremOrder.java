@@ -44,6 +44,7 @@ public class ConfiremOrder extends Activity {
 	private ArrayList<Map<String, Object>> foodList = new ArrayList<Map<String, Object>>();
 	private String userName;
 	public static ArrayList<Map<String, Object>> myOrderList = new ArrayList<Map<String, Object>>();
+	public static ArrayList<Map<String, Object>> myBookingTime = new ArrayList<Map<String, Object>>();
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -61,9 +62,76 @@ public class ConfiremOrder extends Activity {
 		this.btnBooking=(Button) this.findViewById(R.id.activity_confiremorder_btn_booking);
 		this.btnConfiremOrder=(Button) this.findViewById(R.id.activity_confiremorder_btn_confiremorder);
 		btnConfiremOrder.setOnClickListener(new confiremOrder());
-		
+		btnBooking.setOnClickListener(new btnBooking());
 		listview.setOnItemClickListener(new listviewClickListener());
 		IApplication.getInstance().addActivity(this);
+	}
+	
+	public class btnBooking implements OnClickListener{
+
+
+		@Override
+		public void onClick(View view) {
+			if(IApplication.getInstance().getUser()!=null){
+				if(myOrderList.size()!=0){
+					myOrderList.clear();
+				}
+				if(myBookingTime.size()!=0){
+					myBookingTime.clear();
+				}
+				LayoutInflater inflater = (LayoutInflater)ConfiremOrder
+						.this.getSystemService(LAYOUT_INFLATER_SERVICE);
+				final View dataTime=inflater.inflate(R.layout.datatime_activity, null);
+				final EditText editYear=(EditText) dataTime.findViewById(R.id.datatimg_activity_year);
+				final EditText editMonth=(EditText) dataTime.findViewById(R.id.datatimg_activity_month);
+				final EditText editDay=(EditText) dataTime.findViewById(R.id.datatimg_activity_day);
+				final EditText editHour=(EditText) dataTime.findViewById(R.id.datatimg_activity_hour);
+				new TimeTextWatcher(editHour).checkEditText();
+				new TimeTextWatcher(editYear).checkEditText();
+				new TimeTextWatcher(editMonth).checkEditText();
+				new TimeTextWatcher(editDay).checkEditText();
+				AlertDialog alert=new AlertDialog.Builder(ConfiremOrder.this)
+										.setTitle("请设置时间")
+										.setView(dataTime)
+										.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+											
+											@SuppressWarnings("unchecked")
+											@Override
+											public void onClick(DialogInterface dialog, int which) {
+												StringBuffer sb=new StringBuffer();
+												String year=editYear.getText().toString();
+												sb.append(year+"-");
+												String month=editMonth.getText().toString();
+												sb.append(month+"-");
+												String day=editMonth.getText().toString();
+												sb.append(day+" :");
+												String hour=editHour.getText().toString();
+												sb.append(hour);
+												String str=sb.toString();
+												Map<String,Object> time=new HashMap<String, Object>();
+												time.put("time", str);
+												myBookingTime.add(time);
+												foodList.clear();
+												foodList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
+												myOrderList.addAll(foodList);
+												Intent intent = new Intent();
+												userName=IApplication.getInstance().getUser().getUserName();
+												intent.setClass(ConfiremOrder.this, MyOrder.class);
+												startActivity(intent);
+											}
+										})
+										.setPositiveButton("取消", null)
+										.create();
+				alert.show();
+			}else{
+				AlertDialog alert=new AlertDialog.Builder(ConfiremOrder.this).create();
+				alert.setTitle("提示");
+				alert.setMessage("你还没有登录");
+				alert.setButton(DialogInterface.BUTTON_NEGATIVE, "登录", listener);
+				alert.setButton(DialogInterface.BUTTON_POSITIVE, "取消", listener);
+				alert.show();
+			}
+		}
 	}
 	
 	public class listviewClickListener implements OnItemClickListener{
@@ -136,7 +204,7 @@ public class ConfiremOrder extends Activity {
 							}
 						}
 					})
-					.setPositiveButton("取消", listener)
+					.setPositiveButton("取消", null)
 					.create();
 			alert.show();
 		}
@@ -152,7 +220,15 @@ public class ConfiremOrder extends Activity {
 				if(myOrderList.size()!=0){
 					myOrderList.clear();
 				}
-				myOrderList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
+				if(myBookingTime.size()!=0){
+					myBookingTime.clear();
+				}
+				Map<String,Object> time=new HashMap<String, Object>();
+				time.put("time", "已在餐厅");
+				myBookingTime.add(time);
+				foodList.clear();
+				foodList=(ArrayList<Map<String, Object>>) adapter.getItems().clone();
+				myOrderList.addAll(foodList);
 				Intent intent = new Intent();
 				userName=IApplication.getInstance().getUser().getUserName();
 				intent.setClass(ConfiremOrder.this, MyOrder.class);

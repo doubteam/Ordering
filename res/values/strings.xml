@@ -56,4 +56,9 @@
     
     <string name="dialogview_txt_more">更多:</string>
     <string name="dialogview_restnumber">此菜品还剩:</string>
+    
+    <string name="datatimg_activity_year">2014</string>
+    <string name="datatimg_activity_month">1</string>
+    <string name="datatimg_activity_day">1</string>
+    <string name="datatimg_activity_hour">1</string>
 </resources>
